@@ -13,18 +13,12 @@ public class GameBoard {
     private ChanceCard[] chanceCards;
     private Player[] players;
 
-    public GameBoard(Player[] players) {
-        initializeBoard();
-    }
-    public void setGUI(GUI gui) {
+    public GameBoard(GUI gui, Player[] players) {
         this.gui = gui;
+        initializeBoard();
     }
     public GUI_Field[] getFields() {
         return gui_fields;
-    }
-
-    public void setPlayers(Player[] players) {
-        this.players = players;
     }
 
    public void takePlayerTurn(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {

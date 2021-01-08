@@ -10,10 +10,15 @@ public class ControllerGUI {
    public Player[] players;
    public GUI_Player[] gui_player;
    public GUI gui;
+   private GameBoard gameBoard;
 
     ControllerGUI(){
-         gui = new GUI();
+        gui = new GUI();
         PlayerStart();
+    }
+
+    public GameBoard getGameBoard() {
+        return gameBoard;
     }
 
     public void PlayerStart(){
@@ -30,6 +35,8 @@ public class ControllerGUI {
 
             System.out.println(i);
         }
+
+        gameBoard = new GameBoard(gui, players);
     }
 
     public void PlayerSetup(Player player, int playeramout){

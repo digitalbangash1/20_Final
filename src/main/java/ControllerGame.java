@@ -1,7 +1,7 @@
 public class ControllerGame {
 
     ControllerGUI controllerGUI = new ControllerGUI();
-    public Player player;
+    public Player currentPlayer;
 
     public Dice dice = new Dice();
     private boolean win=false;
@@ -27,30 +27,37 @@ public class ControllerGame {
 
     public void Roll(){
 
-        player= NextPlayer();
-        System.out.println(player.getName()+  "turn");
+        currentPlayer= NextPlayer();
+        System.out.println(currentPlayer.getName()+  "turn");
 
         controllerGUI.gui.showMessage(" Do you  want to roll the dice?");
         int value1 = dice.roll();
         int value2 = dice.roll();
         int sum=value1 + value2;
-        player.setCurrentSquareIndex(controllerGUI.gui, sum);
+        currentPlayer.setPlayerNewPosition(sum);
         controllerGUI.gui.setDice(value1,value2);
+
+        try {
+            controllerGUI.getGameBoard().takePlayerTurn(currentPlayer, dice);
+            currentPlayer.getGuiPlayer().setBalance(currentPlayer.getBalance());
+        } catch (NotEnoughBalanceException e) {
+            //handleGameOver(currentPlayer);
+        }
     }
 
     public void MoveCar(){
 
-        int CurrentPosition= player.getPlayerPosition();
-        int PlayerNewPosition =  (player.getPlayerPosition() + player.getPlayerNewPo()) % controllerGUI.gui.getFields().length;
+        int CurrentPosition= currentPlayer.getPlayerPosition();
+        int PlayerNewPosition =  (currentPlayer.getPlayerPosition() + currentPlayer.getPlayerNewPo()) % controllerGUI.gui.getFields().length;
 
         try {
-                controllerGUI.gui.getFields()[CurrentPosition].setCar(controllerGUI.gui_player[player.getPlayerNumber()],false);
-                controllerGUI.gui.getFields()[PlayerNewPosition].setCar(controllerGUI.gui_player[player.getPlayerNumber()],true);
+                controllerGUI.gui.getFields()[CurrentPosition].setCar(controllerGUI.gui_player[currentPlayer.getPlayerNumber()],false);
+                controllerGUI.gui.getFields()[PlayerNewPosition].setCar(controllerGUI.gui_player[currentPlayer.getPlayerNumber()],true);
         }catch (IndexOutOfBoundsException e){
                 e.printStackTrace();
                 System.out.println(" IndexOutOfBoundsException");
         }
 
-        player.setPlayerPosition(PlayerNewPosition);
+        currentPlayer.setPlayerPosition(PlayerNewPosition);
     }
 }

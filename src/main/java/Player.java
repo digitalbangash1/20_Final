@@ -8,7 +8,7 @@ public class Player {
     private boolean isInPrison;
     private boolean getOutOfJailCard;
     private int playerNumber;
-    private int PlayerNewPo;
+    private int playerNewPosition;
     private int PlayerPosition;
     private boolean PlayerTurn;
 
@@ -32,11 +32,11 @@ public class Player {
     }
 
     public int getPlayerNewPo() {
-        return PlayerNewPo;
+        return playerNewPosition;
     }
 
-    public void setPlayerNewPo(int playerNewPo) {
-        PlayerNewPo = playerNewPo;
+    public void setPlayerNewPosition(int playerNewPosition) {
+        this.playerNewPosition = playerNewPosition;
     }
 
     public int getPlayerNumber() {
