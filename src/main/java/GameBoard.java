@@ -9,7 +9,7 @@ public class GameBoard {
     private int chanceCount = 7;
     private GUI gui;
     private Square[] boardSquares;
-    private GUI_Field[] gui_fields;
+    //private GUI_Field[] gui_fields;
     private ChanceCard[] chanceCards;
     private Player[] players;
 
@@ -18,22 +18,22 @@ public class GameBoard {
         initializeBoard();
     }
     public GUI_Field[] getFields() {
-        return gui_fields;
+        return gui.getFields();
     }
 
-   public void takePlayerTurn(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
+   public void takePlayerTurn(Player currentPlayer, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
        boolean prison = handleAnySquareBefore(currentPlayer,dice);
        if (!prison) {
            String name = currentPlayer.getName();
-           String choice = this.gui.getUserButtonPressed("Spiller " + name + "'s tur. Kast terningen - tryk på Kast", "Kast");
+           //String choice = this.gui.getUserButtonPressed("Spiller " + name + "'s tur. Kast terningen - tryk på Kast", "Kast");
            // Initialize dice value
-           int diceValue = -1;
-           if (choice.equals("Kast")) {
-               diceValue = dice.roll();
-               this.gui.setDie(diceValue);
-           }
+           //int diceValue = -1;
+//           if (choice.equals("Kast")) {
+//               diceValue = dice.roll();
+//               this.gui.setDie(diceValue);
+//           }
            //Remove player from current field
-           int nextIndex = movePlayer(currentPlayer, diceValue);
+           int nextIndex = movePlayer(currentPlayer, diceValuesSum);
            Square boardSquare;
            boardSquare = boardSquares[currentPlayer.getPlayerPosition()];
            printBoardSquare(boardSquare);

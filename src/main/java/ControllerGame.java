@@ -38,7 +38,7 @@ public class ControllerGame {
         controllerGUI.gui.setDice(value1,value2);
 
         try {
-            controllerGUI.getGameBoard().takePlayerTurn(currentPlayer, dice);
+            controllerGUI.getGameBoard().takePlayerTurn(currentPlayer, sum, dice);
             currentPlayer.getGuiPlayer().setBalance(currentPlayer.getBalance());
         } catch (NotEnoughBalanceException e) {
             //handleGameOver(currentPlayer);
