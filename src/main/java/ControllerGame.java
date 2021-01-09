@@ -15,8 +15,30 @@ public class ControllerGame {
 
     private void Start(){
         while (!win){
-            Roll();
-            MoveCar();
+
+            currentPlayer= NextPlayer();
+            String playerName = currentPlayer.getName();
+            System.out.println(playerName +  " turn");
+
+            controllerGUI.gui.showMessage(playerName + " : roll the dice");
+            int value1 = dice.roll();
+            int value2 = dice.roll();
+            int sum=value1 + value2;
+
+            currentPlayer.setPlayerNewPosition(sum);
+            int CurrentPosition= currentPlayer.getPlayerPosition();
+            int PlayerNewPosition =  (currentPlayer.getPlayerPosition() + currentPlayer.getPlayerNewPo()) % controllerGUI.gui.getFields().length;
+            controllerGUI.gui.setDice(value1,value2);
+
+            try {
+                controllerGUI.getGameBoard().takePlayerTurn(currentPlayer, PlayerNewPosition, sum, dice);
+                currentPlayer.getGuiPlayer().setBalance(currentPlayer.getBalance());
+            } catch (NotEnoughBalanceException e) {
+                //handleGameOver(currentPlayer);
+            }
+
+            MoveCar(CurrentPosition, PlayerNewPosition);
+            currentPlayer.setPlayerPosition(PlayerNewPosition);
         }
     }
 
@@ -28,31 +50,7 @@ public class ControllerGame {
         return controllerGUI.players[PlayerStart];
     }
 
-    public void Roll(){
-
-        currentPlayer= NextPlayer();
-        String playerName = currentPlayer.getName();
-        System.out.println(playerName +  " turn");
-
-        controllerGUI.gui.showMessage(playerName + " : roll the dice");
-        int value1 = dice.roll();
-        int value2 = dice.roll();
-        int sum=value1 + value2;
-        currentPlayer.setPlayerNewPosition(sum);
-        controllerGUI.gui.setDice(value1,value2);
-
-        try {
-            controllerGUI.getGameBoard().takePlayerTurn(currentPlayer, sum, dice);
-            currentPlayer.getGuiPlayer().setBalance(currentPlayer.getBalance());
-        } catch (NotEnoughBalanceException e) {
-            //handleGameOver(currentPlayer);
-        }
-    }
-
-    public void MoveCar(){
-
-        int CurrentPosition= currentPlayer.getPlayerPosition();
-        int PlayerNewPosition =  (currentPlayer.getPlayerPosition() + currentPlayer.getPlayerNewPo()) % controllerGUI.gui.getFields().length;
+    public void MoveCar(int CurrentPosition, int PlayerNewPosition){
 
         try {
             GUI_Field[] fields = controllerGUI.gui.getFields();
@@ -63,7 +61,5 @@ public class ControllerGame {
                 e.printStackTrace();
                 System.out.println(" IndexOutOfBoundsException");
         }
-
-        currentPlayer.setPlayerPosition(PlayerNewPosition);
     }
 }

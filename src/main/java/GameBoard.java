@@ -13,32 +13,18 @@ public class GameBoard {
     private ChanceCard[] chanceCards;
     private Player[] players;
 
-    public GameBoard(GUI gui, Player[] players) {
+    public GameBoard(GUI gui) {
         this.gui = gui;
         initializeBoard();
     }
 
-    public GUI_Field[] getFields() {
-        return gui.getFields();
-    }
-
-    public void takePlayerTurn(Player currentPlayer, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
-
+    public void takePlayerTurn(Player currentPlayer, int PlayerNewPosition, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
         boolean prison = handleAnySquareBefore(currentPlayer, dice);
         if (!prison) {
-            String name = currentPlayer.getName();
-            //String choice = this.gui.getUserButtonPressed("Spiller " + name + "'s tur. Kast terningen - tryk på Kast", "Kast");
-            // Initialize dice value
-            //int diceValue = -1;
-//           if (choice.equals("Kast")) {
-//               diceValue = dice.roll();
-//               this.gui.setDie(diceValue);
-//           }
-            //Remove player from current field
             int nextIndex = movePlayer(currentPlayer, diceValuesSum);
             Square boardSquare;
-            boardSquare = boardSquares[currentPlayer.getPlayerNewPo()];
-            printBoardSquare(boardSquare);
+            boardSquare = boardSquares[PlayerNewPosition];
+            printBoardSquare(currentPlayer, boardSquare);
             evaluateSquare(boardSquare, currentPlayer);
 
             handleAnySquareAfter(currentPlayer, nextIndex);
@@ -97,14 +83,14 @@ public class GameBoard {
         }
     }
 
-    private void printBoardSquare(Square square) {
+    private void printBoardSquare(Player player, Square square) {
         //Special cases, where the field should not be printed
         if (square.getSquareType() == SquareType.Prison) {
             return;
         } else if (square.getSquareType() == SquareType.TakeChanceCard) {
             return;
         }
-        this.gui.showMessage("Felt: " + square.getTitle());
+        this.gui.showMessage(player.getName() + ", felt: " + square.getTitle());
     }
 
     public void allSquaresToString() {
@@ -288,7 +274,7 @@ public class GameBoard {
         Square Allégade = new Square("Allégade", 120, 45, SquareType.Payment);
         Square Gratisparkering = new Square("Gratis Parkering", 0, 0, SquareType.DoNothing);
         Square FrederiksbergAlle = new Square("Frederiks-\nberg Allé", 140, 50, SquareType.Payment);
-        Square Tuborg = new Square("Tuborg", 10, 10, SquareType.Payment);
+        Square Tuborg = new Square("Tuborg", 150, 10, SquareType.Payment);
         Square Bülowsvej = new Square("Bülowsvej", 140, 50, SquareType.Payment);
         Square GammelKongevej = new Square("Gammel Kongevej", 140, 50, SquareType.Payment);
         Square DFDS = new Square("D.F.D.S", 200, 75, SquareType.Payment);

@@ -41,7 +41,7 @@ public class ControllerGUI {
             System.out.println(i);
         }
 
-        gameBoard = new GameBoard(gui, players);
+        gameBoard = new GameBoard(gui);
     }
 
 //    public void PlayerSetup(Player player, int playeramout){
