@@ -12,8 +12,8 @@ public class Player {
     private int PlayerPosition;
     private boolean PlayerTurn;
 
-    public Player(String name, int playerNumber, int balance) {
-        this.player = new GUI_Player(name, balance);
+    public Player(GUI_Player player, int playerNumber) {
+        this.player = player;
         this.playerNumber = playerNumber;
         this.isInPrison = false;
         this.getOutOfJailCard = false;

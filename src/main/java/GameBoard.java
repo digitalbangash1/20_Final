@@ -17,30 +17,32 @@ public class GameBoard {
         this.gui = gui;
         initializeBoard();
     }
+
     public GUI_Field[] getFields() {
         return gui.getFields();
     }
 
-   public void takePlayerTurn(Player currentPlayer, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
-       boolean prison = handleAnySquareBefore(currentPlayer,dice);
-       if (!prison) {
-           String name = currentPlayer.getName();
-           //String choice = this.gui.getUserButtonPressed("Spiller " + name + "'s tur. Kast terningen - tryk på Kast", "Kast");
-           // Initialize dice value
-           //int diceValue = -1;
+    public void takePlayerTurn(Player currentPlayer, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
+
+        boolean prison = handleAnySquareBefore(currentPlayer, dice);
+        if (!prison) {
+            String name = currentPlayer.getName();
+            //String choice = this.gui.getUserButtonPressed("Spiller " + name + "'s tur. Kast terningen - tryk på Kast", "Kast");
+            // Initialize dice value
+            //int diceValue = -1;
 //           if (choice.equals("Kast")) {
 //               diceValue = dice.roll();
 //               this.gui.setDie(diceValue);
 //           }
-           //Remove player from current field
-           int nextIndex = movePlayer(currentPlayer, diceValuesSum);
-           Square boardSquare;
-           boardSquare = boardSquares[currentPlayer.getPlayerPosition()];
-           printBoardSquare(boardSquare);
-           evaluateSquare(boardSquare,currentPlayer);
+            //Remove player from current field
+            int nextIndex = movePlayer(currentPlayer, diceValuesSum);
+            Square boardSquare;
+            boardSquare = boardSquares[currentPlayer.getPlayerNewPo()];
+            printBoardSquare(boardSquare);
+            evaluateSquare(boardSquare, currentPlayer);
 
-           handleAnySquareAfter(currentPlayer, nextIndex);
-       }
+            handleAnySquareAfter(currentPlayer, nextIndex);
+        }
     }
 
     private void evaluateSquare(Square square, Player currentPlayer) throws NotEnoughBalanceException {
@@ -77,11 +79,10 @@ public class GameBoard {
         //Check if the player has once again reached start
         boolean passedStart = checkIndex(nextIndex);
 
-        if(passedStart) {
+        if (passedStart) {
             currentIndex = nextIndex - squareCount;
             currentPlayer.setCurrentSquareIndex(this.gui, currentIndex);
-        }
-        else {
+        } else {
             currentPlayer.setCurrentSquareIndex(this.gui, currentIndex);
         }
         return currentIndex;
@@ -91,37 +92,36 @@ public class GameBoard {
         if (nextIndex >= squareCount) {
             int temp = 0;
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
-    private void  printBoardSquare(Square square) {
+
+    private void printBoardSquare(Square square) {
         //Special cases, where the field should not be printed
         if (square.getSquareType() == SquareType.Prison) {
             return;
-        }
-        else if (square.getSquareType() == SquareType.TakeChanceCard) {
+        } else if (square.getSquareType() == SquareType.TakeChanceCard) {
             return;
         }
         this.gui.showMessage("Felt: " + square.getTitle());
     }
 
     public void allSquaresToString() {
-        for (int i = 0;i<squareCount;i++) {
+        for (int i = 0; i < squareCount; i++) {
             squareToString(boardSquares[i]);
         }
     }
 
     public void squareToString(Square square) {
-        System.out.println("Title: "+ square.getTitle());
-        System.out.println("SubText: "+ square.getTitle());
-        System.out.println("Price (value): "+ square.getStringPrice());
-        System.out.println("Square Type: "+ square.getSquareType());
+        System.out.println("Title: " + square.getTitle());
+        System.out.println("SubText: " + square.getTitle());
+        System.out.println("Price (value): " + square.getStringPrice());
+        System.out.println("Square Type: " + square.getSquareType());
         System.out.println();
     }
 
-    private boolean handleAnySquareBefore(Player currentPlayer,Dice dice) throws NotEnoughBalanceException {
+    private boolean handleAnySquareBefore(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
         if (currentPlayer.isInPrison()) {
             if (currentPlayer.hasJailFreeCard()) {
                 boolean choice1 = gui.getUserLeftButtonPressed("Du har et kom ud af fængslet kort. Vil du bruge det?", "Ja", "Nej");
@@ -179,13 +179,11 @@ public class GameBoard {
 
         // if the soldToPlayer is the same as the currentPlayer then do not do anything because
         // the currentPlayer already owns this square
-        if (soldToPlayer == currentPlayer){
-                    gui.showMessage("Du ejer det her felt. Der var du heldig!");
-        }
-
-        else if (soldToPlayer == null) {
-            boolean choice  = gui.getUserLeftButtonPressed(
-                    "Vil du købe dette felt? " + "    " + "Felt: " + boardSquare.getTitle() + "    "+ "Pris: " + fieldPrice , "Ja","Nej");
+        if (soldToPlayer == currentPlayer) {
+            gui.showMessage("Du ejer det her felt. Der var du heldig!");
+        } else if (soldToPlayer == null) {
+            boolean choice = gui.getUserLeftButtonPressed(
+                    "Vil du købe dette felt? " + "    " + "Felt: " + boardSquare.getTitle() + "    " + "Pris: " + fieldPrice, "Ja", "Nej");
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -193,12 +191,12 @@ public class GameBoard {
             }
 
         } else {
-            int price = boardSquare.getFieldPrice();
+            int rent = boardSquare.getRent();
             // other players coming to this square pays to the owner and become one of the renters
-            gui.showMessage("Du er landet på et felt for en anden spiller og skal betale dem " + String.valueOf(price));
-            soldToPlayer.increaseBalanceBy(price);
-            currentPlayer.decreaseBalanceBy(price);
-           // boardSquare.addRentedToPlayer(currentPlayer);
+            gui.showMessage("Du er landet på et felt for en anden spiller og skal betale dem " + rent);
+            soldToPlayer.increaseBalanceBy(rent);
+            currentPlayer.decreaseBalanceBy(rent);
+            // boardSquare.addRentedToPlayer(currentPlayer);
         }
     }
 
@@ -207,9 +205,8 @@ public class GameBoard {
         currentPlayer.setInPrison(true);
         gui.showMessage("Du skal i Fængsel!");
         int prisonIndex = getSquareIndexByType(SquareType.Prison);
-        currentPlayer.setCurrentSquareIndex(gui,prisonIndex);
+        currentPlayer.setCurrentSquareIndex(gui, prisonIndex);
     }
-
 
 
     private void handleTakeChanceCardSquare(Player currentPlayer) throws NotEnoughBalanceException {
@@ -221,23 +218,21 @@ public class GameBoard {
         switch (action) {
             case "Start":
                 currentPlayer.increaseBalanceBy(2);
-                currentPlayer.setCurrentSquareIndex(gui,0);
+                currentPlayer.setCurrentSquareIndex(gui, 0);
                 break;
             case "Move":
                 int currentIndex = currentPlayer.getCurrentSquareIndex();
                 if (text.equals("Ryk 5 felter frem")) {
-                        movePlayer(currentPlayer,5);
-                        Square boardSquare = boardSquares[currentPlayer.getCurrentSquareIndex()];
-                        evaluateSquare(boardSquare,currentPlayer);
-                }
-                else {
+                    movePlayer(currentPlayer, 5);
+                    Square boardSquare = boardSquares[currentPlayer.getCurrentSquareIndex()];
+                    evaluateSquare(boardSquare, currentPlayer);
+                } else {
                     boolean choice = gui.getUserLeftButtonPressed("Vil du rykke et felt frem eller tage et nyt chancekort?", "Ryk 1 Felt Frem", "Tag nyt chancekort");
                     if (choice) {
-                        movePlayer(currentPlayer,1);
+                        movePlayer(currentPlayer, 1);
                         Square boardSquare = boardSquares[currentPlayer.getCurrentSquareIndex()];
-                        evaluateSquare(boardSquare,currentPlayer);
-                    }
-                    else {
+                        evaluateSquare(boardSquare, currentPlayer);
+                    } else {
                         handleTakeChanceCardSquare(currentPlayer);
                     }
                 }
@@ -248,13 +243,12 @@ public class GameBoard {
             case "Prison":
                 if (currentPlayer.hasJailFreeCard()) {
                     return;
-                }
-                else {
+                } else {
                     currentPlayer.setGetOutOfJailCard();
                 }
-            break;
+                break;
             case "PayByOthers":
-                for(int i=0;i<players.length;i++) {
+                for (int i = 0; i < players.length; i++) {
                     if (!players[i].getName().equals(currentPlayer.getName())) {
                         players[i].decreaseBalanceBy(1);
                     }
@@ -282,43 +276,42 @@ public class GameBoard {
         // Initialize chance cards
         this.chanceCards = initializeCards();
         // Squares
-        Square start = new Square("Start",0,0,SquareType.Start);
-        Square Rødovrevej = new Square("Rødovrevej", 60, 20,SquareType.Payment);
-        Square Prøvlykken = new Square("Prøv Lykken", 0, 0,SquareType.TakeChanceCard);
-        Square chance1 = new Square("Chance", 0,0, SquareType.TakeChanceCard);
-        Square Hvidovrevej = new Square("Hvidovrevej", 60,20,SquareType.Payment);
-        Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10 el. 200",200,0,  SquareType.Payment);
-        Square Øresund = new Square("Øresund", 200,75, SquareType.Payment);
-        Square Roskildevej = new Square("Roskildevej", 100,40, SquareType.Payment);
-        Square ValbyLanggade = new Square("Valby Langade", 100,40, SquareType.Payment);
-        Square Allégade = new Square("Allégade", 120,45, SquareType.TakeChanceCard);
-        Square Gratisparkering = new Square("Gratis Parkering", 0,0, SquareType.DoNothing);
-        Square FrederiksbergAlle = new Square("Frederiks-\nberg Allé", 140,50, SquareType.Payment);
-        Square Tuborg = new Square("Tuborg", 10, 10 , SquareType.Payment);
-        Square Bülowsvej = new Square("Bülowsvej", 140,50, SquareType.Payment);
-        Square GammelKongevej = new Square("Gammel Kongevej", 140,50,SquareType.Payment);
-        Square DFDS = new Square("D.F.D.S", 200,75, SquareType.Payment);
-        Square Bernstorffsvej = new Square("Bernstorffsvej", 180,60, SquareType.Payment);
-        Square Hellerupvej = new Square("Hellerupvej", 180,60, SquareType.Payment);
-        Square Strandvejen = new Square("Strandvejen", 180,60, SquareType.Payment);
-        Square Helle = new Square("helle", 0,0, SquareType.DoNothing);
-        Square Trianglen = new Square("Trianglen", 200,70, SquareType.Payment);
-        Square Østerbrogade = new Square("Østerbro-\ngade", 220,70, SquareType.Payment);
-        Square Grønningen = new Square("Grønningen", 240,80, SquareType.Payment);
-        Square ØS = new Square("Ø.S", 200,75, SquareType.Payment);
-        Square Bredgade = new Square("Bredgade", 260,80, SquareType.Payment);
-        Square KgsNytorv = new Square("Kgs. Nytorv", 260,80, SquareType.Payment);
-        Square Carlsberg = new Square("Carlsberg", 150,10, SquareType.Payment);
-        Square Østergade = new Square("Østergade", 280,85, SquareType.Payment);
-        Square GaaIFaengsel = new Square("Gå i Fængsel", 0,0, SquareType.GotoJail);
-        Square Amagertorv = new Square("Amagertorv", 300,95, SquareType.Payment);
-        Square Vimmelskaftet = new Square("Vimmel-\nskaftet", 300,95, SquareType.Payment);
-        Square Nygade = new Square("Nygade", 320,100, SquareType.Payment);
-        Square Bornholm = new Square("Bornholm", 200,75, SquareType.Payment);
-        Square Frederiksberggade = new Square("Frederiks-\nberggade", 350,120, SquareType.Payment);
-        Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100,0, SquareType.Payment);
-        Square Raadhuspladsen = new Square("Rådhuspladsen", 400,150, SquareType.Payment);
-
+        Square start = new Square("Start", 0, 0, SquareType.Start);
+        Square Rødovrevej = new Square("Rødovrevej", 60, 20, SquareType.Payment);
+        Square Prøvlykken = new Square("Prøv Lykken", 0, 0, SquareType.TakeChanceCard);
+        Square chance1 = new Square("Chance", 0, 0, SquareType.TakeChanceCard);
+        Square Hvidovrevej = new Square("Hvidovrevej", 60, 20, SquareType.Payment);
+        Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10 el. 200", 200, 0, SquareType.Payment);
+        Square Øresund = new Square("Øresund", 200, 75, SquareType.Payment);
+        Square Roskildevej = new Square("Roskildevej", 100, 40, SquareType.Payment);
+        Square ValbyLanggade = new Square("Valby Langade", 100, 40, SquareType.Payment);
+        Square Allégade = new Square("Allégade", 120, 45, SquareType.Payment);
+        Square Gratisparkering = new Square("Gratis Parkering", 0, 0, SquareType.DoNothing);
+        Square FrederiksbergAlle = new Square("Frederiks-\nberg Allé", 140, 50, SquareType.Payment);
+        Square Tuborg = new Square("Tuborg", 10, 10, SquareType.Payment);
+        Square Bülowsvej = new Square("Bülowsvej", 140, 50, SquareType.Payment);
+        Square GammelKongevej = new Square("Gammel Kongevej", 140, 50, SquareType.Payment);
+        Square DFDS = new Square("D.F.D.S", 200, 75, SquareType.Payment);
+        Square Bernstorffsvej = new Square("Bernstorffsvej", 180, 60, SquareType.Payment);
+        Square Hellerupvej = new Square("Hellerupvej", 180, 60, SquareType.Payment);
+        Square Strandvejen = new Square("Strandvejen", 180, 60, SquareType.Payment);
+        Square Helle = new Square("helle", 0, 0, SquareType.DoNothing);
+        Square Trianglen = new Square("Trianglen", 200, 70, SquareType.Payment);
+        Square Østerbrogade = new Square("Østerbro-\ngade", 220, 70, SquareType.Payment);
+        Square Grønningen = new Square("Grønningen", 240, 80, SquareType.Payment);
+        Square ØS = new Square("Ø.S", 200, 75, SquareType.Payment);
+        Square Bredgade = new Square("Bredgade", 260, 80, SquareType.Payment);
+        Square KgsNytorv = new Square("Kgs. Nytorv", 260, 80, SquareType.Payment);
+        Square Carlsberg = new Square("Carlsberg", 150, 10, SquareType.Payment);
+        Square Østergade = new Square("Østergade", 280, 85, SquareType.Payment);
+        Square GaaIFaengsel = new Square("Gå i Fængsel", 0, 0, SquareType.GotoJail);
+        Square Amagertorv = new Square("Amagertorv", 300, 95, SquareType.Payment);
+        Square Vimmelskaftet = new Square("Vimmel-\nskaftet", 300, 95, SquareType.Payment);
+        Square Nygade = new Square("Nygade", 320, 100, SquareType.Payment);
+        Square Bornholm = new Square("Bornholm", 200, 75, SquareType.Payment);
+        Square Frederiksberggade = new Square("Frederiks-\nberggade", 350, 120, SquareType.Payment);
+        Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100, 0, SquareType.Payment);
+        Square Raadhuspladsen = new Square("Rådhuspladsen", 400, 150, SquareType.Payment);
 
 
         Square[] boardSquares = new Square[squareCount];
@@ -417,13 +410,13 @@ public class GameBoard {
 
     private ChanceCard[] initializeCards() {
         ChanceCard[] chanceCards = new ChanceCard[chanceCount];
-        ChanceCard chance1 = new ChanceCard("Ryk frem til START. Modtag 2M","Start",2,0);
-        ChanceCard chance2 = new ChanceCard("Ryk 5 felter frem","Move",0,5);
-        ChanceCard chance3 = new ChanceCard("Ryk 1 felt frem eller tag et chancekort mere","Move",0,1);
-        ChanceCard chance4 = new ChanceCard("Du har spist for meget slik. Betal 2M til banken","Pay",2,0);
-        ChanceCard chance5 = new ChanceCard("Du løslades uden omkostninger. Behold dette kort indtil du får brugt det","Prison",0,0);
-        ChanceCard chance6 = new ChanceCard("Det er din fødselsdag! Alle giver dig 1M. TILLYKKE MED FØDSELSDAGEN!","PayByOthers",1,0);
-        ChanceCard chance7 = new ChanceCard("Du har lavet alle dine lektier! Modtag 2M fra banken.","PayByBank",2,0);
+        ChanceCard chance1 = new ChanceCard("Ryk frem til START. Modtag 2M", "Start", 2, 0);
+        ChanceCard chance2 = new ChanceCard("Ryk 5 felter frem", "Move", 0, 5);
+        ChanceCard chance3 = new ChanceCard("Ryk 1 felt frem eller tag et chancekort mere", "Move", 0, 1);
+        ChanceCard chance4 = new ChanceCard("Du har spist for meget slik. Betal 2M til banken", "Pay", 2, 0);
+        ChanceCard chance5 = new ChanceCard("Du løslades uden omkostninger. Behold dette kort indtil du får brugt det", "Prison", 0, 0);
+        ChanceCard chance6 = new ChanceCard("Det er din fødselsdag! Alle giver dig 1M. TILLYKKE MED FØDSELSDAGEN!", "PayByOthers", 1, 0);
+        ChanceCard chance7 = new ChanceCard("Du har lavet alle dine lektier! Modtag 2M fra banken.", "PayByBank", 2, 0);
 
         int index = 0;
         chanceCards[index] = chance1;

@@ -8,7 +8,7 @@ import java.awt.*;
 public class ControllerGUI {
 
    public Player[] players;
-   public GUI_Player[] gui_player;
+   //public GUI_Player[] gui_player;
    public GUI gui;
    private GameBoard gameBoard;
 
@@ -30,8 +30,13 @@ public class ControllerGUI {
             if (PlayerName.equals("")){
                 PlayerName = gui.getUserString("Player ") + (i+1);
             }
-            players[i] = new Player(PlayerName,i,30000);
-            PlayerSetup(players[i],number);
+
+            GUI_Player guiPlayer = new GUI_Player(PlayerName, 30000, carType(i));
+            gui.addPlayer(guiPlayer);
+            gui.getFields()[0].setCar(guiPlayer,true);
+
+            players[i] = new Player(guiPlayer,i);
+            //PlayerSetup(players[i],number);
 
             System.out.println(i);
         }
@@ -39,15 +44,15 @@ public class ControllerGUI {
         gameBoard = new GameBoard(gui, players);
     }
 
-    public void PlayerSetup(Player player, int playeramout){
-
-       if (gui_player==null){
-           gui_player = new GUI_Player[playeramout];
-       }
-       gui_player[player.getPlayerNumber()] = new GUI_Player(player.getName(),player.getBalance(), carType(player.getPlayerNumber()));
-        gui.addPlayer(gui_player[player.getPlayerNumber()]);
-       gui.getFields()[0].setCar(gui_player[player.getPlayerNumber()],true);
-    }
+//    public void PlayerSetup(Player player, int playeramout){
+//
+//       if (gui_player==null){
+//           gui_player = new GUI_Player[playeramout];
+//       }
+//       gui_player[player.getPlayerNumber()] = new GUI_Player(player.getName(),player.getBalance(), carType(player.getPlayerNumber()));
+//        gui.addPlayer(gui_player[player.getPlayerNumber()]);
+//       gui.getFields()[0].setCar(gui_player[player.getPlayerNumber()],true);
+//    }
 
 
     public GUI_Car carType(int PlayerNumber){

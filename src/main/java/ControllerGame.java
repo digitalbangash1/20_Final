@@ -1,3 +1,6 @@
+import gui_fields.GUI_Field;
+import gui_fields.GUI_Player;
+
 public class ControllerGame {
 
     ControllerGUI controllerGUI = new ControllerGUI();
@@ -28,9 +31,10 @@ public class ControllerGame {
     public void Roll(){
 
         currentPlayer= NextPlayer();
-        System.out.println(currentPlayer.getName()+  "turn");
+        String playerName = currentPlayer.getName();
+        System.out.println(playerName +  " turn");
 
-        controllerGUI.gui.showMessage(" Do you  want to roll the dice?");
+        controllerGUI.gui.showMessage(playerName + " : roll the dice");
         int value1 = dice.roll();
         int value2 = dice.roll();
         int sum=value1 + value2;
@@ -51,8 +55,10 @@ public class ControllerGame {
         int PlayerNewPosition =  (currentPlayer.getPlayerPosition() + currentPlayer.getPlayerNewPo()) % controllerGUI.gui.getFields().length;
 
         try {
-                controllerGUI.gui.getFields()[CurrentPosition].setCar(controllerGUI.gui_player[currentPlayer.getPlayerNumber()],false);
-                controllerGUI.gui.getFields()[PlayerNewPosition].setCar(controllerGUI.gui_player[currentPlayer.getPlayerNumber()],true);
+            GUI_Field[] fields = controllerGUI.gui.getFields();
+            GUI_Player guiPlayer = currentPlayer.getGuiPlayer();
+            fields[CurrentPosition].setCar(guiPlayer,false);
+            fields[PlayerNewPosition].setCar(guiPlayer,true);
         }catch (IndexOutOfBoundsException e){
                 e.printStackTrace();
                 System.out.println(" IndexOutOfBoundsException");
