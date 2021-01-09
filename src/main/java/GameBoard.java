@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GameBoard {
 
-    private int squareCount = 24;
+    private int squareCount = 40;
     private int chanceCount = 7;
     private GUI gui;
     private Square[] boardSquares;
@@ -115,11 +115,8 @@ public class GameBoard {
 
     public void squareToString(Square square) {
         System.out.println("Title: "+ square.getTitle());
-        System.out.println("SubText: "+ square.getSubText());
-        System.out.println("Description: "+ square.getDescription());
+        System.out.println("SubText: "+ square.getTitle());
         System.out.println("Price (value): "+ square.getStringPrice());
-        System.out.println("Foreground Color: "+ square.getFGColor());
-        System.out.println("Backgorund Color: "+ square.getBGColor());
         System.out.println("Square Type: "+ square.getSquareType());
         System.out.println();
     }
@@ -285,106 +282,138 @@ public class GameBoard {
         // Initialize chance cards
         this.chanceCards = initializeCards();
         // Squares
-        Square start = new Square("Start", "","Modtag 2M når du passerer",2, Color.red, Color.black, SquareType.Start);
-        Square Burgerbaren = new Square("Burgerbaren", "Pris: 1", "Burgerbaren",1, Color.cyan, Color.BLACK, SquareType.Payment);
-        Square Pizzariaet = new Square("Pizzariaet", "Pris: 1", "Pizzariaet",1, Color.cyan, Color.BLACK, SquareType.Payment);
-        Square chance1 = new Square("Chance", "Ta' Chancen!", "Ta' Chancen!",0, Color.white, Color.BLACK, SquareType.TakeChanceCard);
-        Square Slikbutikken = new Square("Slikbutikken", "Pris: 1", "Slikbutikken",1, Color.magenta, Color.BLACK, SquareType.Payment);
-        Square Iskiosken = new Square("Iskiosken", "Pris: 1", "Iskiosken",1, Color.magenta, Color.BLACK, SquareType.Payment);
-        Square Faengsel = new Square("Fængsel", "Bare på besøg", "Fængsel",0, Color.white, Color.BLACK, SquareType.Prison);
-        Square Museet = new Square("Museet", "Pris: 2", "Museet",2, Color.pink, Color.BLACK, SquareType.Payment);
-        Square Biblioteket = new Square("Biblioteket", "Pris: 2", "Biblioteket",2, Color.pink, Color.BLACK, SquareType.Payment);
-        Square chance2 = new Square("Chance", "Ta' Chancen!", "Ta' Chancen!",0, Color.white, Color.BLACK, SquareType.TakeChanceCard);
-        Square Skateparken = new Square("Skateparken", "Pris: 2", "Skateparken",2, Color.orange, Color.BLACK, SquareType.Payment);
-        Square Svoemmingpolen = new Square("Svømmingpoolen", "Pris: 2", "Svømmingpoolen",2, Color.orange, Color.BLACK, SquareType.Payment);
-        Square Gratisparkering = new Square("Gratis Parkering", "", "Gratis Parkering",0, Color.white, Color.BLACK, SquareType.DoNothing);
-        Square Spillehallen = new Square("Spillehallen", "Pris: 3", "Spillehallen",3, Color.red, Color.BLACK, SquareType.Payment);
-        Square Biografen = new Square("Biografen", "Pris: 3", "Biografen",3, Color.red, Color.BLACK, SquareType.Payment);
-        Square chance3 = new Square("Chance", "Ta' Chancen!", "Ta' Chancen!",0, Color.white, Color.BLACK, SquareType.TakeChanceCard);
-        Square Legetoejsbutikken = new Square("Legetøjsbutikken", "Pris: 3", "Legetøjsbutikken",3, Color.yellow, Color.BLACK, SquareType.Payment);
-        Square Dyrehandlen = new Square("Dyrehandlen", "Pris: 3", "Dyrehandlen",3, Color.yellow, Color.BLACK, SquareType.Payment);
-        Square GaaIFaengsel = new Square("Gå I Fængsel", "Du skal i Fængsel!", "Gå I Fængsel",0, Color.white, Color.BLACK, SquareType.GotoJail);
-        Square Bowlinghallen = new Square("Bowlinghallen", "Pris: 4", "Bowlinghallen",4, Color.green, Color.BLACK, SquareType.Payment);
-        Square Zoo = new Square("Zoo", "Pris: 4", "Zoo",4, Color.green, Color.BLACK, SquareType.Payment);
-        Square chance4 = new Square("Chance", "Ta' Chancen!", "Ta' Chancen!",0, Color.white, Color.BLACK, SquareType.TakeChanceCard);
-        Square Vandlandet = new Square("Vandlandet", "Pris: 5", "Vandlandet",5, Color.blue, Color.BLACK, SquareType.Payment);
-        Square Strandpromenaden = new Square("Strandpromenaden", "Pris: 5", "Strandpromenaden",5, Color.blue, Color.BLACK, SquareType.Payment);
+        Square start = new Square("Start",0,0,SquareType.Start);
+        Square Rødovrevej = new Square("Rødovrevej", 60, 20,SquareType.Payment);
+        Square Prøvlykken = new Square("Prøv Lykken", 0, 0,SquareType.TakeChanceCard);
+        Square chance1 = new Square("Chance", 0,0, SquareType.TakeChanceCard);
+        Square Hvidovrevej = new Square("Hvidovrevej", 60,20,SquareType.Payment);
+        Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10 el. 200",200,0,  SquareType.Payment);
+        Square Øresund = new Square("Øresund", 200,75, SquareType.Payment);
+        Square Roskildevej = new Square("Roskildevej", 100,40, SquareType.Payment);
+        Square ValbyLanggade = new Square("Valby Langade", 100,40, SquareType.Payment);
+        Square Allégade = new Square("Allégade", 120,45, SquareType.TakeChanceCard);
+        Square Gratisparkering = new Square("Gratis Parkering", 0,0, SquareType.DoNothing);
+        Square FrederiksbergAlle = new Square("Frederiks-\nberg Allé", 140,50, SquareType.Payment);
+        Square Tuborg = new Square("Tuborg", 10, 10 , SquareType.Payment);
+        Square Bülowsvej = new Square("Bülowsvej", 140,50, SquareType.Payment);
+        Square GammelKongevej = new Square("Gammel Kongevej", 140,50,SquareType.Payment);
+        Square DFDS = new Square("D.F.D.S", 200,75, SquareType.Payment);
+        Square Bernstorffsvej = new Square("Bernstorffsvej", 180,60, SquareType.Payment);
+        Square Hellerupvej = new Square("Hellerupvej", 180,60, SquareType.Payment);
+        Square Strandvejen = new Square("Strandvejen", 180,60, SquareType.Payment);
+        Square Helle = new Square("helle", 0,0, SquareType.DoNothing);
+        Square Trianglen = new Square("Trianglen", 200,70, SquareType.Payment);
+        Square Østerbrogade = new Square("Østerbro-\ngade", 220,70, SquareType.Payment);
+        Square Grønningen = new Square("Grønningen", 240,80, SquareType.Payment);
+        Square ØS = new Square("Ø.S", 200,75, SquareType.Payment);
+        Square Bredgade = new Square("Bredgade", 260,80, SquareType.Payment);
+        Square KgsNytorv = new Square("Kgs. Nytorv", 260,80, SquareType.Payment);
+        Square Carlsberg = new Square("Carlsberg", 150,10, SquareType.Payment);
+        Square Østergade = new Square("Østergade", 280,85, SquareType.Payment);
+        Square GaaIFaengsel = new Square("Gå i Fængsel", 0,0, SquareType.GotoJail);
+        Square Amagertorv = new Square("Amagertorv", 300,95, SquareType.Payment);
+        Square Vimmelskaftet = new Square("Vimmel-\nskaftet", 300,95, SquareType.Payment);
+        Square Nygade = new Square("Nygade", 320,100, SquareType.Payment);
+        Square Bornholm = new Square("Bornholm", 200,75, SquareType.Payment);
+        Square Frederiksberggade = new Square("Frederiks-\nberggade", 350,120, SquareType.Payment);
+        Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100,0, SquareType.Payment);
+        Square Raadhuspladsen = new Square("Rådhuspladsen", 400,150, SquareType.Payment);
+
+
+
         Square[] boardSquares = new Square[squareCount];
         int index = 0;
         boardSquares[index++] = start;
-        boardSquares[index++] = Burgerbaren;
-        boardSquares[index++] = Pizzariaet;
+        boardSquares[index++] = Rødovrevej;
         boardSquares[index++] = chance1;
-        boardSquares[index++] = Slikbutikken;
-        boardSquares[index++] = Iskiosken;
-        boardSquares[index++] = Faengsel;
-        boardSquares[index++] = Museet;
-        boardSquares[index++] = Biblioteket;
-        boardSquares[index++] = chance2;
-        boardSquares[index++] = Skateparken;
-        boardSquares[index++] = Svoemmingpolen;
+        boardSquares[index++] = Hvidovrevej;
+        boardSquares[index++] = BetalIndomstSkat;
+        boardSquares[index++] = Øresund;
+        boardSquares[index++] = Roskildevej;
+        boardSquares[index++] = chance1;
+        boardSquares[index++] = ValbyLanggade;
+        boardSquares[index++] = Allégade;
         boardSquares[index++] = Gratisparkering;
-        boardSquares[index++] = Spillehallen;
-        boardSquares[index++] = Biografen;
-        boardSquares[index++] = chance3;
-        boardSquares[index++] = Legetoejsbutikken;
-        boardSquares[index++] = Dyrehandlen;
+        boardSquares[index++] = FrederiksbergAlle;
+        boardSquares[index++] = Tuborg;
+        boardSquares[index++] = Bülowsvej;
+        boardSquares[index++] = GammelKongevej;
+        boardSquares[index++] = DFDS;
+        boardSquares[index++] = Bernstorffsvej;
+        boardSquares[index++] = chance1;
+        boardSquares[index++] = Hellerupvej;
+        boardSquares[index++] = Strandvejen;
+        boardSquares[index++] = Helle;
+        boardSquares[index++] = Trianglen;
+        boardSquares[index++] = chance1;
+        boardSquares[index++] = Østerbrogade;
+        boardSquares[index++] = Grønningen;
+        boardSquares[index++] = ØS;
+        boardSquares[index++] = Bredgade;
+        boardSquares[index++] = KgsNytorv;
+        boardSquares[index++] = Carlsberg;
+        boardSquares[index++] = Østergade;
         boardSquares[index++] = GaaIFaengsel;
-        boardSquares[index++] = Bowlinghallen;
-        boardSquares[index++] = Zoo;
-        boardSquares[index++] = chance4;
-        boardSquares[index++] = Vandlandet;
-        boardSquares[index++] = Strandpromenaden;
+        boardSquares[index++] = Amagertorv;
+        boardSquares[index++] = Vimmelskaftet;
+        boardSquares[index++] = chance1;
+        boardSquares[index++] = Nygade;
+        boardSquares[index++] = Bornholm;
+        boardSquares[index++] = chance1;
+        boardSquares[index++] = Frederiksberggade;
+        boardSquares[index++] = Skat;
+        boardSquares[index++] = Raadhuspladsen;
+
         this.boardSquares = boardSquares;
 
-        GUI_Field[] gui_fields = {
-                MapToGui(start),
-        MapToGui(Burgerbaren),
-        MapToGui(Pizzariaet),
-        MapToGui(chance1),
-        MapToGui(Slikbutikken),
-        MapToGui(Iskiosken),
-        MapToGui(Faengsel),
-        MapToGui(Museet),
-        MapToGui(Biblioteket),
-        MapToGui(chance2),
-        MapToGui(Skateparken),
-        MapToGui(Svoemmingpolen),
-        MapToGui(Gratisparkering),
-        MapToGui(Spillehallen),
-        MapToGui(Biografen),
-        MapToGui(chance3),
-        MapToGui(Legetoejsbutikken),
-        MapToGui(Dyrehandlen),
-        MapToGui(GaaIFaengsel),
-        MapToGui(Bowlinghallen),
-        MapToGui(Zoo),
-        MapToGui(chance4),
-        MapToGui(Vandlandet),
-        MapToGui(Strandpromenaden)
-        };
-
-        this.gui_fields = gui_fields;
+//        GUI_Field[] gui_fields = {
+//                MapToGui(start),
+//        MapToGui(Burgerbaren),
+//        MapToGui(Pizzariaet),
+//        MapToGui(chance1),
+//        MapToGui(Slikbutikken),
+//        MapToGui(Iskiosken),
+//        MapToGui(Faengsel),
+//        MapToGui(Museet),
+//        MapToGui(Biblioteket),
+//        MapToGui(chance2),
+//        MapToGui(Skateparken),
+//        MapToGui(Svoemmingpolen),
+//        MapToGui(Gratisparkering),
+//        MapToGui(Spillehallen),
+//        MapToGui(Biografen),
+//        MapToGui(chance3),
+//        MapToGui(Legetoejsbutikken),
+//        MapToGui(Dyrehandlen),
+//        MapToGui(GaaIFaengsel),
+//        MapToGui(Bowlinghallen),
+//        MapToGui(Zoo),
+//        MapToGui(chance4),
+//        MapToGui(Vandlandet),
+//        MapToGui(Strandpromenaden)
+//        };
+//
+//        this.gui_fields = gui_fields;
     }
 
-    private GUI_Field MapToGui(Square square) {
-        switch (square.getSquareType()) {
-
-            case Start:
-                return new GUI_Start(square.getTitle(), square.getSubText(), square.getDescription(),square.getBGColor(),square.getFGColor());
-            case DoNothing:
-                return new GUI_Refuge();
-            case Payment:
-                return new GUI_Street(square.getTitle(), square.getSubText(), square.getDescription(),square.getStringPrice(),square.getBGColor(),square.getFGColor());
-            case GotoJail:
-                return new GUI_Jail("default",square.getTitle(),square.getSubText(),square.getDescription(),square.getBGColor(),square.getFGColor());
-            case Prison:
-                return new GUI_Jail("default",square.getTitle(),square.getSubText(),square.getDescription(),square.getBGColor(),square.getFGColor());
-            case TakeChanceCard:
-                return new GUI_Chance();
-        }
-        return new GUI_Empty();
-    }
+//    private GUI_Field MapToGui(Square square) {
+//        switch (square.getSquareType()) {
+//
+//            case Start:
+//                return new GUI_Start(square.getTitle(), square.getSubText(), square.getDescription(),square.getBGColor(),square.getFGColor());
+//            case DoNothing:
+//                return new GUI_Refuge();
+//            case Payment:
+//                return new GUI_Street(square.getTitle(), square.getSubText(), square.getDescription(),square.getStringPrice(),square.getBGColor(),square.getFGColor());
+//            case GotoJail:
+//                return new GUI_Jail("default",square.getTitle(),square.getSubText(),square.getDescription(),square.getBGColor(),square.getFGColor());
+//            case Prison:
+//                return new GUI_Jail("default",square.getTitle(),square.getSubText(),square.getDescription(),square.getBGColor(),square.getFGColor());
+//            case TakeChanceCard:
+//                return new GUI_Chance();
+//        }
+//        return new GUI_Empty();
+//    }
 
     private ChanceCard[] initializeCards() {
         ChanceCard[] chanceCards = new ChanceCard[chanceCount];
