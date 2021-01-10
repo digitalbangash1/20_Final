@@ -147,7 +147,7 @@ public class GameBoard {
 
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
         if (nextIndex >= squareCount) {
-            currentPlayer.increaseBalanceBy(2);
+            currentPlayer.increaseBalanceBy(200);
             gui.showMessage("Du har passeret start og modtager 2M!");
         }
     }
@@ -189,14 +189,14 @@ public class GameBoard {
 
     private void handleGotoJailSquare(Player currentPlayer) {
         currentPlayer.setInPrison(true);
-        gui.showMessage("Du skal i Fængsel!");
+        gui.showMessage(Texts.goingToJail);
         int prisonIndex = getSquareIndexByType(SquareType.Prison);
         currentPlayer.setCurrentSquareIndex(gui, prisonIndex);
     }
 
 
     private void handleTakeChanceCardSquare(Player currentPlayer) throws NotEnoughBalanceException {
-        gui.showMessage("Du er landet på prøv lykken! Tag et chance kort");
+        gui.showMessage(Texts.proeveLykken);
         ChanceCard chanceCard = chanceCards[1].getRandomChanceCard(chanceCards);
         String text = chanceCard.getText();
         gui.displayChanceCard(text);
