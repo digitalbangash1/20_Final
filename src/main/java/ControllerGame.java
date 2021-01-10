@@ -22,7 +22,7 @@ public class ControllerGame {
 
             controllerGUI.gui.showMessage(playerName + " : roll the dice");
             int value1 = dice.roll();
-            int value2 = dice.roll();
+            int value2 =dice.roll();
             int sum=value1 + value2;
 
             currentPlayer.setPlayerNewPosition(sum);
