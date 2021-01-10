@@ -147,7 +147,7 @@ public class GameBoard {
 
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
         if (nextIndex >= squareCount) {
-            currentPlayer.increaseBalanceBy(2);
+            currentPlayer.increaseBalanceBy(200);
             gui.showMessage("Du har passeret start og modtager 2M!");
         }
     }
