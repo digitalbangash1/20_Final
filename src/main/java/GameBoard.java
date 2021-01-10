@@ -189,14 +189,14 @@ public class GameBoard {
 
     private void handleGotoJailSquare(Player currentPlayer) {
         currentPlayer.setInPrison(true);
-        gui.showMessage("Du skal i Fængsel!");
+        gui.showMessage(Texts.goingToJail);
         int prisonIndex = getSquareIndexByType(SquareType.Prison);
         currentPlayer.setCurrentSquareIndex(gui, prisonIndex);
     }
 
 
     private void handleTakeChanceCardSquare(Player currentPlayer) throws NotEnoughBalanceException {
-        gui.showMessage("Du er landet på prøv lykken! Tag et chance kort");
+        gui.showMessage(Texts.proeveLykken);
         ChanceCard chanceCard = chanceCards[1].getRandomChanceCard(chanceCards);
         String text = chanceCard.getText();
         gui.displayChanceCard(text);
