@@ -1,3 +1,5 @@
+import gui_main.GUI;
+
 import java.util.Random;
 
 public class ChanceCard {
@@ -5,7 +7,8 @@ public class ChanceCard {
     private String actionType;
     private int value;
     private int move;
-    private int chanceCount = 6;
+    private int chanceCount = 11;
+
 
     public ChanceCard(String text, String actionType, int value, int move) {
         this.text = text;

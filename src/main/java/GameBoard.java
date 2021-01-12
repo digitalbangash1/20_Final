@@ -1,12 +1,9 @@
-import gui_fields.*;
 import gui_main.GUI;
-
-import java.awt.*;
 
 public class GameBoard {
 
     private int squareCount = 40;
-    private int chanceCount = 7;
+    private int chanceCount = 11;
     private GUI gui;
     private Square[] boardSquares;
     //private GUI_Field[] gui_fields;
@@ -52,7 +49,7 @@ public class GameBoard {
     }
 
     private void handleStartSquare(Player currentPlayer) {
-        gui.showMessage("Du er landet på start! Modtag 2M");
+        gui.showMessage(Texts.start);
         currentPlayer.increaseBalanceBy(2);
     }
 
@@ -110,27 +107,27 @@ public class GameBoard {
     private boolean handleAnySquareBefore(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
         if (currentPlayer.isInPrison()) {
             if (currentPlayer.hasJailFreeCard()) {
-                boolean choice1 = gui.getUserLeftButtonPressed("Du har et kom ud af fængslet kort. Vil du bruge det?", "Ja", "Nej");
+                boolean choice1 = gui.getUserLeftButtonPressed(Texts.faengselkort, "Ja", "Nej");
                 if (choice1) {
                     currentPlayer.setInPrison(false);
                     return false;
                 } else {
-                    boolean choice = gui.getUserLeftButtonPressed(currentPlayer.getName() + " Er i fængsel. Slå en 6'er for at komme fri eller betal 2M", "Kast", "Betal 2M");
+                    boolean choice = gui.getUserLeftButtonPressed(currentPlayer.getName() + Texts.jailout, "Kast", "Betal 2M");
                     if (choice) {
                         int diceValue = dice.roll();
                         this.gui.setDie(diceValue);
                         if (diceValue == 6) {
-                            gui.showMessage("Du slog en 6'er og undslap fængslet!");
+                            gui.showMessage(Texts.twosame);
                             movePlayer(currentPlayer, diceValue);
                             currentPlayer.setInPrison(false);
                             return false;
                         } else {
-                            gui.showMessage("Du slog ikke en 6'er!");
+                            gui.showMessage(Texts.notsame);
                             return true;
                         }
                     } else {
                         currentPlayer.decreaseBalanceBy(2);
-                        String button = this.gui.getUserButtonPressed("Du kom ud af fængslet. Kast terningen - tryk på Kast", "Kast");
+                        String button = this.gui.getUserButtonPressed(Texts.cameoutofjail,"Kast");
                         if (button.equals("Kast")) {
                             int diceValue = dice.roll();
                             this.gui.setDie(diceValue);
@@ -148,7 +145,7 @@ public class GameBoard {
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
         if (nextIndex >= squareCount) {
             currentPlayer.increaseBalanceBy(200);
-            gui.showMessage("Du har passeret start og modtager 2M!");
+            gui.showMessage(Texts.passedstart);
         }
     }
 
@@ -169,7 +166,7 @@ public class GameBoard {
             gui.showMessage("Du ejer det her felt. Der var du heldig!");
         } else if (soldToPlayer == null) {
             boolean choice = gui.getUserLeftButtonPressed(
-                    "Vil du købe dette felt? " + "    " + "Felt: " + boardSquare.getTitle() + "    " + "Pris: " + fieldPrice, "Ja", "Nej");
+                    Texts.buyfield + "    " + "Felt: " + boardSquare.getTitle() + "    " + "Pris: " + fieldPrice, Texts.ja, Texts.nej);
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -179,7 +176,7 @@ public class GameBoard {
         } else {
             int rent = boardSquare.getRent();
             // other players coming to this square pays to the owner and become one of the renters
-            gui.showMessage("Du er landet på et felt for en anden spiller og skal betale dem " + rent);
+            gui.showMessage(Texts.landonotherfield + rent);
             soldToPlayer.increaseBalanceBy(rent);
             currentPlayer.decreaseBalanceBy(rent);
             // boardSquare.addRentedToPlayer(currentPlayer);
