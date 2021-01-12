@@ -4,7 +4,7 @@ public class ChanceDeck {
     private ChanceCard[] chanceCards;
 
     public ChanceCard[] initializeCards() {
-        chanceCards = new ChanceCard[16];
+        chanceCards = new ChanceCard[21];
         chanceCards[0]  = new ChanceCard("Ryk frem til START.","Start",0,0);
         chanceCards[1]  = new ChanceCard("Ryk 3 felter frem","Move",0,3);
         chanceCards[2]  = new ChanceCard("Ryk 3 felter tilbage","Move",0,-3);
@@ -21,6 +21,15 @@ public class ChanceDeck {
         chanceCards[13] = new ChanceCard("Grundet dyrtiden har De fået gageforhøjelse, modtag kr 25.","GetPaid",25,0);
         chanceCards[14] = new ChanceCard("Gå i fængsel.Du modtager ikke 200 kr for at passer start","Gå i Fængsel",0,10);
         chanceCards[15] = new ChanceCard("Ryk frem til Øresundsbåden","CrossingStart",200,25);
+        chanceCards[16] = new ChanceCard("Gå i fængsel.Du modtager ikke 200 kr for at passer start","Gå i Fængsel",0,10);
+        chanceCards[17] = new ChanceCard("Gå i fængsel.Du modtager ikke 200 kr for at passer start","Gå i Fængsel",0,10);
+        chanceCards[18] = new ChanceCard("Du løslades uden omkostninger. Behold dette kort indtil du får brugt det", "Prison", 0, 0);
+        chanceCards[19] = new ChanceCard("Du løslades uden omkostninger. Behold dette kort indtil du får brugt det", "Prison", 0, 0);
+        chanceCards[20] = new ChanceCard("Modtager 25 kr af hver medspilelr", "PaidbyOthers", 25, 0);
+
+
+
+
 
 
 

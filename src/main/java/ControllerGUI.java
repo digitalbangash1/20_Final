@@ -31,7 +31,7 @@ public class ControllerGUI {
                 PlayerName = gui.getUserString("Player ") + (i+1);
             }
 
-            GUI_Player guiPlayer = new GUI_Player(PlayerName, 30000, carType(i));
+            GUI_Player guiPlayer = new GUI_Player(PlayerName, 1500, carType(i));
             gui.addPlayer(guiPlayer);
             gui.getFields()[0].setCar(guiPlayer,true);
 
