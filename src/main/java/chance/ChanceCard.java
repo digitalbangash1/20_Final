@@ -1,3 +1,5 @@
+package chance;
+
 import java.util.Random;
 
 public class ChanceCard {

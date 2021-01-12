@@ -1,7 +1,5 @@
-import gui_fields.*;
+import chance.ChanceCard;
 import gui_main.GUI;
-
-import java.awt.*;
 
 public class GameBoard {
 
