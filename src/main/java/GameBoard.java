@@ -260,7 +260,7 @@ public class GameBoard {
 
     private void initializeBoard() {
         // Initialize chance cards
-        this.chanceCards = initializeCards();
+    //    this.chanceCards = initializeCards();
         // Squares
         Square start = new Square("Start", 0, 0, SquareType.Start);
         Square Rødovrevej = new Square("Rødovrevej", 60, 20, SquareType.Payment);
@@ -394,24 +394,24 @@ public class GameBoard {
 //        return new GUI_Empty();
 //    }
 
-    private ChanceCard[] initializeCards() {
-        ChanceCard[] chanceCards = new ChanceCard[chanceCount];
-        ChanceCard chance1 = new ChanceCard("Ryk frem til START. Modtag 2M", "Start", 2, 0);
-        ChanceCard chance2 = new ChanceCard("Ryk 5 felter frem", "Move", 0, 5);
-        ChanceCard chance3 = new ChanceCard("Ryk 1 felt frem eller tag et chancekort mere", "Move", 0, 1);
-        ChanceCard chance4 = new ChanceCard("Du har spist for meget slik. Betal 2M til banken", "Pay", 2, 0);
-        ChanceCard chance5 = new ChanceCard("Du løslades uden omkostninger. Behold dette kort indtil du får brugt det", "Prison", 0, 0);
-        ChanceCard chance6 = new ChanceCard("Det er din fødselsdag! Alle giver dig 1M. TILLYKKE MED FØDSELSDAGEN!", "PayByOthers", 1, 0);
-        ChanceCard chance7 = new ChanceCard("Du har lavet alle dine lektier! Modtag 2M fra banken.", "PayByBank", 2, 0);
-
-        int index = 0;
-        chanceCards[index] = chance1;
-        chanceCards[index++] = chance2;
-        chanceCards[index++] = chance3;
-        chanceCards[index++] = chance4;
-        chanceCards[index++] = chance5;
-        chanceCards[index++] = chance6;
-        chanceCards[index++] = chance7;
-        return chanceCards;
-    }
-}
+//  //  private ChanceCard[] initializeCards() {
+//        ChanceCard[] chanceCards = new ChanceCard[chanceCount];
+//        ChanceCard chance1 = new ChanceCard("Ryk frem til START. Modtag 2M", "Start", 2, 0);
+//        ChanceCard chance2 = new ChanceCard("Ryk 5 felter frem", "Move", 0, 5);
+//        ChanceCard chance3 = new ChanceCard("Ryk 1 felt frem eller tag et chancekort mere", "Move", 0, 1);
+//        ChanceCard chance4 = new ChanceCard("Du har spist for meget slik. Betal 2M til banken", "Pay", 2, 0);
+//        ChanceCard chance5 = new ChanceCard("Du løslades uden omkostninger. Behold dette kort indtil du får brugt det", "Prison", 0, 0);
+//        ChanceCard chance6 = new ChanceCard("Det er din fødselsdag! Alle giver dig 1M. TILLYKKE MED FØDSELSDAGEN!", "PayByOthers", 1, 0);
+//        ChanceCard chance7 = new ChanceCard("Du har lavet alle dine lektier! Modtag 2M fra banken.", "PayByBank", 2, 0);
+//
+//        int index = 0;
+//        chanceCards[index] = chance1;
+//        chanceCards[index++] = chance2;
+//        chanceCards[index++] = chance3;
+//        chanceCards[index++] = chance4;
+//        chanceCards[index++] = chance5;
+//        chanceCards[index++] = chance6;
+//        chanceCards[index++] = chance7;
+//        return chanceCards;
+//    }
+//}
