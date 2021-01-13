@@ -1,8 +1,9 @@
+import Translator.Texts;
 import chance.ChanceCard;
-import gui_fields.*;
+import gui_fields.GUI_Field;
+import gui_fields.GUI_Player;
 import gui_main.GUI;
-
-import java.awt.*;
+import org.w3c.dom.Text;
 
 public class GameBoard {
 
@@ -53,8 +54,8 @@ public class GameBoard {
     }
 
     private void handleStartSquare(Player currentPlayer) {
-        gui.showMessage("Du er landet på start! Modtag 2M");
-        currentPlayer.increaseBalanceBy(2);
+        gui.showMessage(Texts.start);
+        currentPlayer.increaseBalanceBy(200);
     }
 
     private int movePlayer(Player currentPlayer, int diceValue) {
@@ -111,28 +112,28 @@ public class GameBoard {
     private boolean handleAnySquareBefore(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
         if (currentPlayer.isInPrison()) {
             if (currentPlayer.hasJailFreeCard()) {
-                boolean choice1 = gui.getUserLeftButtonPressed("Du har et kom ud af fængslet kort. Vil du bruge det?", "Ja", "Nej");
+                boolean choice1 = gui.getUserLeftButtonPressed(Texts.jailfreecard, Texts.ja, Texts.nej);
                 if (choice1) {
                     currentPlayer.setInPrison(false);
                     return false;
                 } else {
-                    boolean choice = gui.getUserLeftButtonPressed(currentPlayer.getName() + " Er i fængsel. Slå en 6'er for at komme fri eller betal 2M", "Kast", "Betal 2M");
+                    boolean choice = gui.getUserLeftButtonPressed(currentPlayer.getName() + Texts.jailout,Texts.roll,Texts.pay50);
                     if (choice) {
                         int diceValue = dice.roll();
                         this.gui.setDie(diceValue);
                         if (diceValue == 6) {
-                            gui.showMessage("Du slog en 6'er og undslap fængslet!");
+                            gui.showMessage(Texts.twosame);
                             movePlayer(currentPlayer, diceValue);
                             currentPlayer.setInPrison(false);
                             return false;
                         } else {
-                            gui.showMessage("Du slog ikke en 6'er!");
+                            gui.showMessage(Texts.notsame);
                             return true;
                         }
                     } else {
-                        currentPlayer.decreaseBalanceBy(2);
-                        String button = this.gui.getUserButtonPressed("Du kom ud af fængslet. Kast terningen - tryk på Kast", "Kast");
-                        if (button.equals("Kast")) {
+                        currentPlayer.decreaseBalanceBy(50);
+                        String button = this.gui.getUserButtonPressed(Texts.cameoutofjail, Texts.roll);
+                        if (button.equals(Texts.roll)) {
                             int diceValue = dice.roll();
                             this.gui.setDie(diceValue);
                             currentPlayer.setInPrison(false);
@@ -148,8 +149,8 @@ public class GameBoard {
 
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
         if (nextIndex >= squareCount) {
-            currentPlayer.increaseBalanceBy(2);
-            gui.showMessage("Du har passeret start og modtager 2M!");
+            currentPlayer.increaseBalanceBy(200);
+            gui.showMessage(Texts.passedstart);
         }
     }
 
@@ -167,10 +168,10 @@ public class GameBoard {
         // if the soldToPlayer is the same as the currentPlayer then do not do anything because
         // the currentPlayer already owns this square
         if (soldToPlayer == currentPlayer) {
-            gui.showMessage("Du ejer det her felt. Der var du heldig!");
+            gui.showMessage(Texts.youownit);
         } else if (soldToPlayer == null) {
             boolean choice = gui.getUserLeftButtonPressed(
-                    "Vil du købe dette felt? " + "    " + "Felt: " + boardSquare.getTitle() + "    " + "Pris: " + fieldPrice, "Ja", "Nej");
+                    Texts.willyoubuy  +  "    " + Texts.field  + boardSquare.getTitle() + "      "     + Texts.price + fieldPrice, Texts.ja, Texts.nej);
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -180,7 +181,7 @@ public class GameBoard {
         } else {
             int rent = boardSquare.getRent();
             // other players coming to this square pays to the owner and become one of the renters
-            gui.showMessage("Du er landet på et felt for en anden spiller og skal betale dem " + rent);
+            gui.showMessage(Texts.landonotherfield + rent);
             soldToPlayer.increaseBalanceBy(rent);
             currentPlayer.decreaseBalanceBy(rent);
             // boardSquare.addRentedToPlayer(currentPlayer);
@@ -190,27 +191,26 @@ public class GameBoard {
 
     private void handleGotoJailSquare(Player currentPlayer) {
         currentPlayer.setInPrison(true);
-        gui.showMessage("Du skal i Fængsel!");
+        gui.showMessage(Texts.goingToJail);
         int prisonIndex = getSquareIndexByType(SquareType.Prison);
         currentPlayer.setCurrentSquareIndex(gui, prisonIndex);
     }
 
 
     private void handleTakeChanceCardSquare(Player currentPlayer) throws NotEnoughBalanceException {
-        gui.showMessage("Du er landet på prøv lykken! Tag et chance kort");
+        gui.showMessage(Texts.proeveLykken);
         ChanceCard chanceCard = chanceCards[1].getRandomChanceCard(chanceCards);
         String text = chanceCard.getText();
         gui.displayChanceCard(text);
         String action = chanceCard.getActionType();
         switch (action) {
             case "Start":
-                currentPlayer.increaseBalanceBy(2);
                 currentPlayer.setCurrentSquareIndex(gui, 0);
                 break;
             case "Move":
                 int currentIndex = currentPlayer.getCurrentSquareIndex();
-                if (text.equals("Ryk 5 felter frem")) {
-                    movePlayer(currentPlayer, 5);
+                if (text.equals("Ryk 3 felter frem")) {
+                    movePlayer(currentPlayer, 3);
                     Square boardSquare = boardSquares[currentPlayer.getCurrentSquareIndex()];
                     evaluateSquare(boardSquare, currentPlayer);
                 } else {
@@ -225,7 +225,13 @@ public class GameBoard {
                 }
                 break;
             case "Pay":
-                currentPlayer.decreaseBalanceBy(2);
+                currentPlayer.decreaseBalanceBy(chanceCard.getValue());
+                break;
+
+
+            case "Get Paid":
+                currentPlayer.increaseBalanceBy(chanceCard.getValue());
+
                 break;
             case "Prison":
                 if (currentPlayer.hasJailFreeCard()) {
@@ -234,16 +240,23 @@ public class GameBoard {
                     currentPlayer.setGetOutOfJailCard();
                 }
                 break;
-            case "PayByOthers":
+            case "PaidbyOthers":
                 for (int i = 0; i < players.length; i++) {
                     if (!players[i].getName().equals(currentPlayer.getName())) {
-                        players[i].decreaseBalanceBy(1);
+                        players[i].decreaseBalanceBy(chanceCard.getValue());
                     }
-                    currentPlayer.increaseBalanceBy(1);
+                    currentPlayer.increaseBalanceBy(25);
                 }
                 break;
-            case "PayByBank":
-                currentPlayer.increaseBalanceBy(2);
+            case "CrossingStart":
+
+                if (currentPlayer.getPlayerPosition()> chanceCard.getMove()){
+                    currentPlayer.increaseBalanceBy(chanceCard.getValue();
+                    currentPlayer.setCurrentSquareIndex(gui, 0);
+                    currentPlayer.setPlayerNewPosition(chanceCard.getMove());
+
+
+
                 break;
         }
     }
@@ -259,9 +272,9 @@ public class GameBoard {
     }
 
 
-    private void initializeBoard() {
+    private void initializeBoard(){
         // Initialize chance cards
-    //    this.chanceCards = initializeCards();
+        //this.chanceCards = initializeCards();
         // Squares
         Square start = new Square("Start", 0, 0, SquareType.Start);
         Square Rødovrevej = new Square("Rødovrevej", 60, 20, SquareType.Payment);
@@ -395,7 +408,7 @@ public class GameBoard {
 //        return new GUI_Empty();
 //    }
 
-//  //  private ChanceCard[] initializeCards() {
+//    private ChanceCard[] initializeCards() {
 //        ChanceCard[] chanceCards = new ChanceCard[chanceCount];
 //        ChanceCard chance1 = new ChanceCard("Ryk frem til START. Modtag 2M", "Start", 2, 0);
 //        ChanceCard chance2 = new ChanceCard("Ryk 5 felter frem", "Move", 0, 5);
