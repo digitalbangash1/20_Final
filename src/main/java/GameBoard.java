@@ -254,7 +254,7 @@ public class GameBoard {
                     currentPlayer.increaseBalanceBy(chanceCard.getValue();
                     currentPlayer.setCurrentSquareIndex(gui, 0);
                     currentPlayer.setPlayerNewPosition(chanceCard.getMove());
-                    MoveCar()
+
 
 
                 break;
