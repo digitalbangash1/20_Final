@@ -1,3 +1,4 @@
+import chance.ChanceCard;
 import gui_fields.*;
 import gui_main.GUI;
 
