@@ -117,7 +117,7 @@ public class GameBoard {
                     currentPlayer.setInPrison(false);
                     return false;
                 } else {
-                    boolean choice = gui.getUserLeftButtonPressed(currentPlayer.getName() + Texts.jailout,Texts.roll,Texts.pay50);
+                    boolean choice = gui.getUserLeftButtonPressed(currentPlayer.getName() + Texts.jailout, Texts.roll, Texts.pay50);
                     if (choice) {
                         int diceValue = dice.roll();
                         this.gui.setDie(diceValue);
@@ -171,7 +171,7 @@ public class GameBoard {
             gui.showMessage(Texts.youownit);
         } else if (soldToPlayer == null) {
             boolean choice = gui.getUserLeftButtonPressed(
-                    Texts.willyoubuy  +  "    " + Texts.field  + boardSquare.getTitle() + "      "     + Texts.price + fieldPrice, Texts.ja, Texts.nej);
+                    Texts.willyoubuy + "    " + Texts.field + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -213,15 +213,15 @@ public class GameBoard {
                     movePlayer(currentPlayer, 3);
                     Square boardSquare = boardSquares[currentPlayer.getCurrentSquareIndex()];
                     evaluateSquare(boardSquare, currentPlayer);
-                } else {
-                    boolean choice = gui.getUserLeftButtonPressed("Vil du rykke et felt frem eller tage et nyt chancekort?", "Ryk 1 Felt Frem", "Tag nyt chancekort");
-                    if (choice) {
-                        movePlayer(currentPlayer, 1);
-                        Square boardSquare = boardSquares[currentPlayer.getCurrentSquareIndex()];
-                        evaluateSquare(boardSquare, currentPlayer);
-                    } else {
-                        handleTakeChanceCardSquare(currentPlayer);
-                    }
+//                } else {
+//                    boolean choice = gui.getUserLeftButtonPressed("Vil du rykke et felt frem eller tage et nyt chancekort?", "Ryk 1 Felt Frem", "Tag nyt chancekort");
+//                    if (choice) {
+//                        movePlayer(currentPlayer, 1);
+//                        Square boardSquare = boardSquares[currentPlayer.getCurrentSquareIndex()];
+//                        evaluateSquare(boardSquare, currentPlayer);
+//                    } else {
+//                        handleTakeChanceCardSquare(currentPlayer);
+//                    }
                 }
                 break;
             case "Pay":
@@ -229,7 +229,7 @@ public class GameBoard {
                 break;
 
 
-            case "Get Paid":
+            case "GetPaid":
                 currentPlayer.increaseBalanceBy(chanceCard.getValue());
 
                 break;
@@ -248,116 +248,124 @@ public class GameBoard {
                     currentPlayer.increaseBalanceBy(25);
                 }
                 break;
+
+
+            case "Rådhuspladsen":
+                hideOldPosition();
+                currentPlayer.setPlayerPosition(0);
+                currentPlayer.setPlayerNewPosition(chanceCard.getMove());
+                MoveCar();
+                break;
+
+
+
             case "CrossingStart":
 
-                if (currentPlayer.getPlayerPosition()> chanceCard.getMove()){
+                if (currentPlayer.getPlayerPosition() > chanceCard.getMove()) {
                     currentPlayer.increaseBalanceBy(chanceCard.getValue();
                     currentPlayer.setCurrentSquareIndex(gui, 0);
                     currentPlayer.setPlayerNewPosition(chanceCard.getMove());
-
-
-
-                break;
+                    break;
+                }
         }
-    }
 
-    private int getSquareIndexByType(SquareType squareType) {
-        for (int i = 0; i < squareCount; i++) {
-            Square boardSquare = boardSquares[i];
-            if (boardSquare.getSquareType() == squareType) {
-                return i;
+        private int getSquareIndexByType (SquareType squareType){
+            for (int i = 0; i < squareCount; i++) {
+                Square boardSquare = boardSquares[i];
+                if (boardSquare.getSquareType() == squareType) {
+                    return i;
+                }
             }
+            return 0;
         }
-        return 0;
-    }
 
 
-    private void initializeBoard(){
-        // Initialize chance cards
-        //this.chanceCards = initializeCards();
-        // Squares
-        Square start = new Square("Start", 0, 0, SquareType.Start);
-        Square Rødovrevej = new Square("Rødovrevej", 60, 20, SquareType.Payment);
-        Square Prøvlykken = new Square("Prøv Lykken", 0, 0, SquareType.TakeChanceCard);
-        Square chance1 = new Square("Chance", 0, 0, SquareType.TakeChanceCard);
-        Square Hvidovrevej = new Square("Hvidovrevej", 60, 20, SquareType.Payment);
-        Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10 el. 200", 200, 0, SquareType.Payment);
-        Square Øresund = new Square("Øresund", 200, 75, SquareType.Payment);
-        Square Roskildevej = new Square("Roskildevej", 100, 40, SquareType.Payment);
-        Square ValbyLanggade = new Square("Valby Langade", 100, 40, SquareType.Payment);
-        Square Allégade = new Square("Allégade", 120, 45, SquareType.Payment);
-        Square Gratisparkering = new Square("Gratis Parkering", 0, 0, SquareType.DoNothing);
-        Square FrederiksbergAlle = new Square("Frederiks-\nberg Allé", 140, 50, SquareType.Payment);
-        Square Tuborg = new Square("Tuborg", 150, 10, SquareType.Payment);
-        Square Bülowsvej = new Square("Bülowsvej", 140, 50, SquareType.Payment);
-        Square GammelKongevej = new Square("Gammel Kongevej", 140, 50, SquareType.Payment);
-        Square DFDS = new Square("D.F.D.S", 200, 75, SquareType.Payment);
-        Square Bernstorffsvej = new Square("Bernstorffsvej", 180, 60, SquareType.Payment);
-        Square Hellerupvej = new Square("Hellerupvej", 180, 60, SquareType.Payment);
-        Square Strandvejen = new Square("Strandvejen", 180, 60, SquareType.Payment);
-        Square Helle = new Square("helle", 0, 0, SquareType.DoNothing);
-        Square Trianglen = new Square("Trianglen", 200, 70, SquareType.Payment);
-        Square Østerbrogade = new Square("Østerbro-\ngade", 220, 70, SquareType.Payment);
-        Square Grønningen = new Square("Grønningen", 240, 80, SquareType.Payment);
-        Square ØS = new Square("Ø.S", 200, 75, SquareType.Payment);
-        Square Bredgade = new Square("Bredgade", 260, 80, SquareType.Payment);
-        Square KgsNytorv = new Square("Kgs. Nytorv", 260, 80, SquareType.Payment);
-        Square Carlsberg = new Square("Carlsberg", 150, 10, SquareType.Payment);
-        Square Østergade = new Square("Østergade", 280, 85, SquareType.Payment);
-        Square GaaIFaengsel = new Square("Gå i Fængsel", 0, 0, SquareType.GotoJail);
-        Square Amagertorv = new Square("Amagertorv", 300, 95, SquareType.Payment);
-        Square Vimmelskaftet = new Square("Vimmel-\nskaftet", 300, 95, SquareType.Payment);
-        Square Nygade = new Square("Nygade", 320, 100, SquareType.Payment);
-        Square Bornholm = new Square("Bornholm", 200, 75, SquareType.Payment);
-        Square Frederiksberggade = new Square("Frederiks-\nberggade", 350, 120, SquareType.Payment);
-        Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100, 0, SquareType.Payment);
-        Square Raadhuspladsen = new Square("Rådhuspladsen", 400, 150, SquareType.Payment);
+        private void initializeBoard () {
+            // Initialize chance cards
+            //this.chanceCards = initializeCards();
+            // Squares
+            Square start = new Square("Start", 0, 0, SquareType.Start);
+            Square Rødovrevej = new Square("Rødovrevej", 60, 20, SquareType.Payment);
+            Square Prøvlykken = new Square("Prøv Lykken", 0, 0, SquareType.TakeChanceCard);
+            Square chance1 = new Square("Chance", 0, 0, SquareType.TakeChanceCard);
+            Square Hvidovrevej = new Square("Hvidovrevej", 60, 20, SquareType.Payment);
+            Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10 el. 200", 200, 0, SquareType.Payment);
+            Square Øresund = new Square("Øresund", 200, 75, SquareType.Payment);
+            Square Roskildevej = new Square("Roskildevej", 100, 40, SquareType.Payment);
+            Square ValbyLanggade = new Square("Valby Langade", 100, 40, SquareType.Payment);
+            Square Allégade = new Square("Allégade", 120, 45, SquareType.Payment);
+            Square Gratisparkering = new Square("Gratis Parkering", 0, 0, SquareType.DoNothing);
+            Square FrederiksbergAlle = new Square("Frederiks-\nberg Allé", 140, 50, SquareType.Payment);
+            Square Tuborg = new Square("Tuborg", 150, 10, SquareType.Payment);
+            Square Bülowsvej = new Square("Bülowsvej", 140, 50, SquareType.Payment);
+            Square GammelKongevej = new Square("Gammel Kongevej", 140, 50, SquareType.Payment);
+            Square DFDS = new Square("D.F.D.S", 200, 75, SquareType.Payment);
+            Square Bernstorffsvej = new Square("Bernstorffsvej", 180, 60, SquareType.Payment);
+            Square Hellerupvej = new Square("Hellerupvej", 180, 60, SquareType.Payment);
+            Square Strandvejen = new Square("Strandvejen", 180, 60, SquareType.Payment);
+            Square Helle = new Square("helle", 0, 0, SquareType.DoNothing);
+            Square Trianglen = new Square("Trianglen", 200, 70, SquareType.Payment);
+            Square Østerbrogade = new Square("Østerbro-\ngade", 220, 70, SquareType.Payment);
+            Square Grønningen = new Square("Grønningen", 240, 80, SquareType.Payment);
+            Square ØS = new Square("Ø.S", 200, 75, SquareType.Payment);
+            Square Bredgade = new Square("Bredgade", 260, 80, SquareType.Payment);
+            Square KgsNytorv = new Square("Kgs. Nytorv", 260, 80, SquareType.Payment);
+            Square Carlsberg = new Square("Carlsberg", 150, 10, SquareType.Payment);
+            Square Østergade = new Square("Østergade", 280, 85, SquareType.Payment);
+            Square GaaIFaengsel = new Square("Gå i Fængsel", 0, 0, SquareType.GotoJail);
+            Square Amagertorv = new Square("Amagertorv", 300, 95, SquareType.Payment);
+            Square Vimmelskaftet = new Square("Vimmel-\nskaftet", 300, 95, SquareType.Payment);
+            Square Nygade = new Square("Nygade", 320, 100, SquareType.Payment);
+            Square Bornholm = new Square("Bornholm", 200, 75, SquareType.Payment);
+            Square Frederiksberggade = new Square("Frederiks-\nberggade", 350, 120, SquareType.Payment);
+            Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100, 0, SquareType.Payment);
+            Square Raadhuspladsen = new Square("Rådhuspladsen", 400, 150, SquareType.Payment);
 
 
-        Square[] boardSquares = new Square[squareCount];
-        int index = 0;
-        boardSquares[index++] = start;
-        boardSquares[index++] = Rødovrevej;
-        boardSquares[index++] = chance1;
-        boardSquares[index++] = Hvidovrevej;
-        boardSquares[index++] = BetalIndomstSkat;
-        boardSquares[index++] = Øresund;
-        boardSquares[index++] = Roskildevej;
-        boardSquares[index++] = chance1;
-        boardSquares[index++] = ValbyLanggade;
-        boardSquares[index++] = Allégade;
-        boardSquares[index++] = Gratisparkering;
-        boardSquares[index++] = FrederiksbergAlle;
-        boardSquares[index++] = Tuborg;
-        boardSquares[index++] = Bülowsvej;
-        boardSquares[index++] = GammelKongevej;
-        boardSquares[index++] = DFDS;
-        boardSquares[index++] = Bernstorffsvej;
-        boardSquares[index++] = chance1;
-        boardSquares[index++] = Hellerupvej;
-        boardSquares[index++] = Strandvejen;
-        boardSquares[index++] = Helle;
-        boardSquares[index++] = Trianglen;
-        boardSquares[index++] = chance1;
-        boardSquares[index++] = Østerbrogade;
-        boardSquares[index++] = Grønningen;
-        boardSquares[index++] = ØS;
-        boardSquares[index++] = Bredgade;
-        boardSquares[index++] = KgsNytorv;
-        boardSquares[index++] = Carlsberg;
-        boardSquares[index++] = Østergade;
-        boardSquares[index++] = GaaIFaengsel;
-        boardSquares[index++] = Amagertorv;
-        boardSquares[index++] = Vimmelskaftet;
-        boardSquares[index++] = chance1;
-        boardSquares[index++] = Nygade;
-        boardSquares[index++] = Bornholm;
-        boardSquares[index++] = chance1;
-        boardSquares[index++] = Frederiksberggade;
-        boardSquares[index++] = Skat;
-        boardSquares[index++] = Raadhuspladsen;
+            Square[] boardSquares = new Square[squareCount];
+            boardSquares[0] = start;
+            boardSquares[1] = Rødovrevej;
+            boardSquares[2] = chance1;
+            boardSquares[3] = Hvidovrevej;
+            boardSquares[4] = BetalIndomstSkat;
+            boardSquares[5] = Øresund;
+            boardSquares[6] = Roskildevej;
+            boardSquares[7] = chance1;
+            boardSquares[8] = ValbyLanggade;
+            boardSquares[9] = Allégade;
+            boardSquares[10] = Gratisparkering;
+            boardSquares[11] = FrederiksbergAlle;
+            boardSquares[12] = Tuborg;
+            boardSquares[13] = Bülowsvej;
+            boardSquares[14] = GammelKongevej;
+            boardSquares[15] = DFDS;
+            boardSquares[16] = Bernstorffsvej;
+            boardSquares[17] = chance1;
+            boardSquares[18] = Hellerupvej;
+            boardSquares[19] = Strandvejen;
+            boardSquares[20] = Helle;
+            boardSquares[21] = Trianglen;
+            boardSquares[22] = chance1;
+            boardSquares[23] = Østerbrogade;
+            boardSquares[24] = Grønningen;
+            boardSquares[25] = ØS;
+            boardSquares[26] = Bredgade;
+            boardSquares[27] = KgsNytorv;
+            boardSquares[28] = Carlsberg;
+            boardSquares[29] = Østergade;
+            boardSquares[30] = GaaIFaengsel;
+            boardSquares[31] = Amagertorv;
+            boardSquares[32] = Vimmelskaftet;
+            boardSquares[33] = chance1;
+            boardSquares[34] = Nygade;
+            boardSquares[35] = Bornholm;
+            boardSquares[36] = chance1;
+            boardSquares[37] = Frederiksberggade;
+            boardSquares[38] = Skat;
+            boardSquares[39] = Raadhuspladsen;
 
-        this.boardSquares = boardSquares;
+            this.boardSquares = boardSquares;
+        }
 
 //        GUI_Field[] gui_fields = {
 //                MapToGui(start),
@@ -387,7 +395,6 @@ public class GameBoard {
 //        };
 //
 //        this.gui_fields = gui_fields;
-    }
 
 //    private GUI_Field MapToGui(Square square) {
 //        switch (square.getSquareType()) {
@@ -427,5 +434,5 @@ public class GameBoard {
 //        chanceCards[index++] = chance6;
 //        chanceCards[index++] = chance7;
 //        return chanceCards;
-//    }
-//}
+    }
+}

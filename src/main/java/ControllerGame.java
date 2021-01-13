@@ -34,7 +34,7 @@ public class ControllerGame {
                 controllerGUI.getGameBoard().takePlayerTurn(currentPlayer, PlayerNewPosition, sum, dice);
                 currentPlayer.getGuiPlayer().setBalance(currentPlayer.getBalance());
             } catch (NotEnoughBalanceException e) {
-                //handleGameOver(currentPlayer);
+                handleGameOver(currentPlayer);
             }
 
             MoveCar(CurrentPosition, PlayerNewPosition);
@@ -49,6 +49,15 @@ public class ControllerGame {
         controllerGUI.players[PlayerStart].setPlayerTurn(true);
         return controllerGUI.players[PlayerStart];
     }
+
+    private void handleGameOver( Player currentPlayer) {
+
+        Player winningPlayer = Player[0];
+    }
+
+
+
+
 
     public void MoveCar(int CurrentPosition, int PlayerNewPosition){
 

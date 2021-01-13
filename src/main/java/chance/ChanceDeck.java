@@ -16,7 +16,7 @@ public class ChanceDeck {
         chanceCards[7] = new ChanceCard("Ryk 3 felter tilbage", "Move", 0, -3);
         chanceCards[8] = new ChanceCard("Værdien af egen avl fra nyttehaven udgør 200 som de modtager af banken", "GetPaid", 200, 0);
         chanceCards[9] = new ChanceCard("Ryk frem til Grønningen, hvis De passerer start indkasser da kr 4000", "CrossingStart", 200, 24);
-        chanceCards[10] = new ChanceCard("Ryk frem til Grønningen. Hvis de passerer Start modtager du 200 kroner", "Grønningen", 200, 0);
+       // chanceCards[10] = new ChanceCard("Ryk frem til Grønningen. Hvis de passerer Start modtager du 200 kroner", "CrossingStart", 200, 24);
         chanceCards[11] = new ChanceCard("Betal for vognvask og smøring", "Pay", 10, 0);
         chanceCards[12] = new ChanceCard("Tag til Rådhuspladsen", "Rådhuspladsen", 0, 39);
         chanceCards[13] = new ChanceCard("Grundet dyrtiden har De fået gageforhøjelse, modtag kr 25.", "GetPaid", 25, 0);
