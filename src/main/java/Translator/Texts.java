@@ -11,6 +11,7 @@ public class Texts {
     public  static  String notsame = "Du slog ikke to ens!";
     public  static  String cameoutofjail = "Du kom ud af fængslet. Kast terningen - tryk på Kast";
     public  static  String passedstart = "Du har passeret start og modtager 200 kroner!";
+    public  static  String buyfield = "Vil du købe dette felt?";
     public  static  String ja = "Ja";
     public  static  String nej = "Nej";
     public  static  String landonotherfield = "Du er landet på et felt for en anden spiller og skal betale dem";
