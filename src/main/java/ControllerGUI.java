@@ -7,21 +7,24 @@ import java.awt.*;
 
 public class ControllerGUI {
 
-   public Player[] players;
-   //public GUI_Player[] gui_player;
-   public GUI gui;
-   private GameBoard gameBoard;
+    public Player[] players;
+    public GUI gui;
+    private GameBoard gameBoard;
 
     ControllerGUI(){
         gui = new GUI();
         PlayerStart();
     }
 
+    public Player[] getPlayers() {
+        return players;
+    }
+
     public GameBoard getGameBoard() {
         return gameBoard;
     }
 
-    public void PlayerStart(){
+    private void PlayerStart(){
         int number = Integer.parseInt(RequestPlayerAmount());
         System.out.println(number);
         players= new Player[number];
@@ -41,7 +44,7 @@ public class ControllerGUI {
             System.out.println(i);
         }
 
-        gameBoard = new GameBoard(gui);
+        gameBoard = new GameBoard(gui, players);
     }
 
 //    public void PlayerSetup(Player player, int playeramout){

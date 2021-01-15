@@ -4,11 +4,11 @@ import gui_main.GUI;
 public class Player {
 
     private GUI_Player player;
-    private int currentSquareIndex;
+    //private int currentSquareIndex;
     private boolean isInPrison;
     private boolean getOutOfJailCard;
     private int playerNumber;
-    private int playerNewPosition;
+    //private int playerNewPosition;
     private int PlayerPosition;
     private boolean PlayerTurn;
 
@@ -31,13 +31,13 @@ public class Player {
         PlayerPosition = playerPosition;
     }
 
-    public int getPlayerNewPo() {
-        return playerNewPosition;
-    }
-
-    public void setPlayerNewPosition(int playerNewPosition) {
-        this.playerNewPosition = playerNewPosition;
-    }
+//    public int getPlayerNewPo() {
+//        return playerNewPosition;
+//    }
+//
+//    public void setPlayerNewPosition(int playerNewPosition) {
+//        this.playerNewPosition = playerNewPosition;
+//    }
 
     public int getPlayerNumber() {
         return playerNumber;
@@ -53,16 +53,20 @@ public class Player {
         return this.player.getBalance();
     }
 
-    public int getCurrentSquareIndex() {
-        return currentSquareIndex;
+    public void setBalance(int balance) {
+        this.player.setBalance(balance);
     }
 
-    public void setCurrentSquareIndex(GUI gui, int currentPositionIndex) {
-        //Remove player from old field
-        gui.getFields()[this.currentSquareIndex].setCar(this.player, false);
-        this.currentSquareIndex = currentPositionIndex;
-        gui.getFields()[this.currentSquareIndex].setCar(this.player, true);
-    }
+    //public int getCurrentSquareIndex() {
+    //    return currentSquareIndex;
+    //}
+
+//    public void setCurrentSquareIndex(GUI gui, int currentPositionIndex) {
+//        //Remove player from old field
+//        gui.getFields()[this.currentSquareIndex].setCar(this.player, false);
+//        this.currentSquareIndex = currentPositionIndex;
+//        gui.getFields()[this.currentSquareIndex].setCar(this.player, true);
+//    }
 
     public void increaseBalanceBy(int amount) {
         int currentBalance = this.player.getBalance();
