@@ -1,5 +1,3 @@
-import java.awt.*;
-
 public class Square {
 
     private final String title;
@@ -7,14 +5,19 @@ public class Square {
     private final int rent;
     private final SquareType squareType;
     private Player soldToPlayer;
-    private int[] housearray;
+    private int[] houseArray;
+    private final HouseColor houseColor;
+    private final int housePrice;
 
-    public Square(String title,  int price, int rent, SquareType squareType,int[] housearray) {
+    public Square(String title,  int price, int rent, int[] houseArray, SquareType squareType, HouseColor houseColor, int housePrice) {
         this.title = title;
         this.price = price;
         this.rent = rent;
         this.squareType = squareType;
-        this.housearray = housearray;
+        this.houseArray = houseArray;
+        this.houseColor = houseColor;
+        this.housePrice = housePrice;
+
     }
 
 
