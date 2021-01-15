@@ -7,13 +7,17 @@ public class Square {
     private final int rent;
     private final SquareType squareType;
     private Player soldToPlayer;
+    private int[] housearray;
 
-    public Square(String title,  int price, int rent, SquareType squareType) {
+    public Square(String title,  int price, int rent, SquareType squareType,int[] housearray) {
         this.title = title;
         this.price = price;
         this.rent = rent;
         this.squareType = squareType;
+        this.housearray = housearray;
     }
+
+
 
     public String getTitle() {
         return title;
