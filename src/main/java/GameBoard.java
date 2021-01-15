@@ -104,7 +104,7 @@ public class GameBoard {
         } else if (square.getSquareType() == SquareType.TakeChanceCard) {
             return;
         }
-        this.gui.showMessage(player.getName() + ", felt: " + square.getTitle());
+        this.gui.showMessage(player.getName() + ":"+ " Du er landet på "+ " ---> " + square.getTitle());
     }
 
     private boolean handleAnySquareBefore(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
@@ -169,7 +169,7 @@ public class GameBoard {
             gui.showMessage(Texts.youownit);
         } else if (soldToPlayer == null) {
             boolean choice = gui.getUserLeftButtonPressed(
-                    Texts.willyoubuy + "    " + Texts.field + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
+                    Texts.willyoubuy + "    " + Texts.field +"   " + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -291,7 +291,7 @@ public class GameBoard {
         Square Roskildevej = new Square("Roskildevej", 100, 40, SquareType.Payment);
         Square ValbyLanggade = new Square("Valby Langade", 100, 40, SquareType.Payment);
         Square Allégade = new Square("Allégade", 120, 45, SquareType.Payment);
-        Square Gratisparkering = new Square("Gratis Parkering", 0, 0, SquareType.DoNothing);
+        Square Gratisparkering = new Square("Gratis Parkering", 0, 0, SquareType.Prison);
         Square FrederiksbergAlle = new Square("Frederiks-\nberg Allé", 140, 50, SquareType.Payment);
         Square Tuborg = new Square("Tuborg", 150, 10, SquareType.Payment);
         Square Bülowsvej = new Square("Bülowsvej", 140, 50, SquareType.Payment);
