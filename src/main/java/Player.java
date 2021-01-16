@@ -11,8 +11,15 @@ public class Player {
     //private int playerNewPosition;
     private int PlayerPosition;
     private boolean PlayerTurn;
+    private String name;
 
+    /**
+     * Player contructor
+     * @param player
+     * @param playerNumber
+     */
     public Player(GUI_Player player, int playerNumber) {
+        this.name = player.getName();
         this.player = player;
         this.playerNumber = playerNumber;
         this.isInPrison = false;
@@ -46,7 +53,7 @@ public class Player {
     public GUI_Player getGuiPlayer() {return this.player;}
 
     public String getName() {
-        return this.player.getName();
+        return this.name;
     }
 
     public int getBalance() {
@@ -59,7 +66,7 @@ public class Player {
 
     //public int getCurrentSquareIndex() {
     //    return currentSquareIndex;
-    //}
+   //}
 
 //    public void setCurrentSquareIndex(GUI gui, int currentPositionIndex) {
 //        //Remove player from old field

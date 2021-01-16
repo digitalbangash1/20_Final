@@ -7,9 +7,9 @@ import java.awt.*;
 
 public class ControllerGUI {
 
-    public Player[] players;
-    public GUI gui;
-    private GameBoard gameBoard;
+   public Player[] players;
+   public GUI gui;
+   private GameBoard gameBoard;
 
     ControllerGUI(){
         gui = new GUI();
@@ -24,6 +24,9 @@ public class ControllerGUI {
         return gameBoard;
     }
 
+    /**
+     * This method starts the process when the game is intialised.
+     */
     private void PlayerStart(){
         int number = Integer.parseInt(RequestPlayerAmount());
         System.out.println(number);
