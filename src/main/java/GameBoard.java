@@ -413,10 +413,7 @@ public class GameBoard {
                 }
                 break;
             case Raadhuspladsen:
-                //hideOldPosition();
-                //currentPlayer.setPlayerPosition(0);
-                //currentPlayer.setPlayerNewPosition(chanceCard.getMove());
-                MoveCar(currentPlayer, 0);
+                MoveCar(currentPlayer, 39);
                 break;
             case CrossingStart:
                 if (currentPlayer.getPlayerPosition() > chanceCard.getMove()) {
@@ -449,8 +446,9 @@ public class GameBoard {
         GUI_Field[] fields = gui.getFields();
         GUI_Player guiPlayer = currentPlayer.getGuiPlayer();
         fields[CurrentPosition].setCar(guiPlayer, false);
-        fields[PlayerNewPosition].setCar(guiPlayer, true);
         currentPlayer.setPlayerPosition(PlayerNewPosition);
+        fields[PlayerNewPosition].setCar(guiPlayer, true);
+
 
 //        }catch (IndexOutOfBoundsException e){
 //            e.printStackTrace();
