@@ -14,6 +14,8 @@ public class GameBoard {
     private Player[] players;
     private Square[] boardSquares;
     private ChanceDeck chanceDeck = new ChanceDeck();
+    private HouseGroundBlock[] grounds = new HouseGroundBlock[8];
+
 
     public GameBoard(GUI gui, Player[] players) {
         this.gui = gui;
@@ -25,14 +27,137 @@ public class GameBoard {
         boolean prison = handleAnySquareBefore(currentPlayer, dice);
         if (!prison) {
             int PlayerNewPosition = CalculateNewPlayerPosition(currentPlayer, diceValuesSum);
-            Square boardSquare;
-            boardSquare = boardSquares[PlayerNewPosition];
+            Square boardSquare = boardSquares[PlayerNewPosition];
             printBoardSquare(currentPlayer, boardSquare);
             evaluateSquare(boardSquare, currentPlayer);
             handleAnySquareAfter(currentPlayer, PlayerNewPosition);
             currentPlayer.setBalance(currentPlayer.getBalance());
             MoveCar(currentPlayer, PlayerNewPosition);
+            handleBuildingHouse(currentPlayer, boardSquare);
         }
+    }
+
+    public Square[] getBoardSquares() {
+        return boardSquares;
+    }
+
+    private void handleBuildingHouse(Player player, Square boardSquare) throws NotEnoughBalanceException {
+
+        Square[] blueBlockSquares = getOwnSquaresByColor(player, HouseColor.blue);
+        Square[] pinkBlockSquares = getOwnSquaresByColor(player, HouseColor.pink);
+        Square[] greenBlockSquares = getOwnSquaresByColor(player, HouseColor.green);
+        Square[] grayBlockSquares = getOwnSquaresByColor(player, HouseColor.gray);
+        Square[] redBlockSquares = getOwnSquaresByColor(player, HouseColor.red);
+        Square[] whiteBlockSquares = getOwnSquaresByColor(player, HouseColor.white);
+        Square[] yellowBlockSquares = getOwnSquaresByColor(player, HouseColor.yellow);
+        Square[] purpleBlockSquares = getOwnSquaresByColor(player, HouseColor.purple);
+
+        int totalCount = blueBlockSquares.length + pinkBlockSquares.length + greenBlockSquares.length +
+                grayBlockSquares.length + redBlockSquares.length + whiteBlockSquares.length +
+                yellowBlockSquares.length + purpleBlockSquares.length;
+
+        if (totalCount <= 0) {
+            return;
+        }
+
+        Square[] totalSquares = copyBuildingSquaresIntoArray(totalCount, blueBlockSquares, pinkBlockSquares, greenBlockSquares,
+                grayBlockSquares, redBlockSquares, whiteBlockSquares,
+                yellowBlockSquares, purpleBlockSquares);
+        String[] buildingSquareChoices = new String[totalSquares.length];
+        for (int i = 0; i < totalSquares.length; i++) {
+            buildingSquareChoices[i] = totalSquares[i].getTitle();
+        }
+        boolean buildHouseChoice = gui.getUserLeftButtonPressed(Texts.vilDuByggeHus, Texts.ja, Texts.nej);
+        if (!buildHouseChoice) {
+            return;
+        }
+        String squareTitleChoiceForHouse = gui.getUserSelection(Texts.hvorViDuByggeHus, buildingSquareChoices);
+        Square selectedSquare = null;
+        for (int i = 0; i < boardSquares.length; i++) {
+            Square s = boardSquares[i];
+            if (s.getTitle().equalsIgnoreCase(squareTitleChoiceForHouse)) {
+                selectedSquare = s;
+                break;
+            }
+        }
+
+        if (selectedSquare == null) {
+            return;
+        }
+
+        selectedSquare.increaseBuildHousesCountBy(1);
+        player.decreaseBalanceBy(selectedSquare.getHousePrice());
+        GUI_Player guiPlayer = player.getGuiPlayer();
+        guiPlayer.setName(player.getName() + " (Hus: " + selectedSquare.getBuiltHousesCount() + ")");
+    }
+
+    private Square[] copyBuildingSquaresIntoArray(int totalCount, Square[]... sources) {
+        int startIndex = 0;
+        Square[] totalSquares = new Square[totalCount];
+        for (int i = 0; i < sources.length; i++) {
+            Square[] source = sources[i];
+            for (int j = 0; j < source.length; j++) {
+                totalSquares[startIndex] = source[j];
+                startIndex++;
+            }
+        }
+        return totalSquares;
+    }
+
+    private int getHouseGroundBlockCount(HouseColor color) {
+        for (int i = 0; i < grounds.length; i++) {
+            HouseGroundBlock block = grounds[i];
+            if (block.getColor() == color) {
+                return block.getCount();
+            }
+        }
+        return 0;
+    }
+
+    private int getSquaresCountOwnedByPlayerWhereHouseCanBeBuilt(Player player, HouseColor color) {
+        int count = 0;
+        for (int i = 0; i < boardSquares.length; i++) {
+            Square s = boardSquares[i];
+            if (s.isOwnable() && s.getColor() == color && s.getSoldToPlayer() == player && s.canBuildAnotherHouse()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int getSquaresCountOwnedByPlayer(Player player, HouseColor color) {
+        int count = 0;
+        for (int i = 0; i < boardSquares.length; i++) {
+            Square s = boardSquares[i];
+            if (s.isOwnable() && s.getColor() == color && s.getSoldToPlayer() == player) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private Square[] getOwnSquaresByColor(Player player, HouseColor color) {
+
+        int blockCount = getHouseGroundBlockCount(color);
+        int ownedByPlayerCount = getSquaresCountOwnedByPlayer(player, color);
+        int availForBuildingHousesCount = getSquaresCountOwnedByPlayerWhereHouseCanBeBuilt(player, color);
+
+        if (blockCount != ownedByPlayerCount) {
+            return new Square[0];
+        }
+
+        Square[] ownSquares = new Square[availForBuildingHousesCount];
+        int ownSquaresIndex = 0;
+        for (int i = 0; i < boardSquares.length; i++) {
+            Square s = boardSquares[i];
+            if (s.isOwnable() && s.getColor() == color && s.getSoldToPlayer() == player) {
+                if (s.canBuildAnotherHouse()) {
+                    ownSquares[ownSquaresIndex] = s;
+                    ownSquaresIndex++;
+                }
+            }
+        }
+        return ownSquares;
     }
 
     public void gameOver(Player currentPlayer) {
@@ -104,7 +229,7 @@ public class GameBoard {
         } else if (square.getSquareType() == SquareType.TakeChanceCard) {
             return;
         }
-        this.gui.showMessage(player.getName() + ":"+ " Du er landet på "+ " ---> " + square.getTitle());
+        this.gui.showMessage(player.getName() + ", felt: " + square.getTitle());
     }
 
     private boolean handleAnySquareBefore(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
@@ -169,7 +294,7 @@ public class GameBoard {
             gui.showMessage(Texts.youownit);
         } else if (soldToPlayer == null) {
             boolean choice = gui.getUserLeftButtonPressed(
-                    Texts.willyoubuy + "    " + Texts.field +"   " + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
+                    Texts.willyoubuy + "    " + Texts.field + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -278,9 +403,16 @@ public class GameBoard {
 
 
     private void initializeBoard() {
-        // Initialize chance cards
-        //this.chanceCards = initializeCards();
-        // Squares
+
+        grounds[0] = new HouseGroundBlock(HouseColor.blue, 2);
+        grounds[1] = new HouseGroundBlock(HouseColor.pink, 3);
+        grounds[2] = new HouseGroundBlock(HouseColor.green, 3);
+        grounds[3] = new HouseGroundBlock(HouseColor.gray, 3);
+        grounds[4] = new HouseGroundBlock(HouseColor.red, 3);
+        grounds[5] = new HouseGroundBlock(HouseColor.white, 3);
+        grounds[6] = new HouseGroundBlock(HouseColor.yellow, 3);
+        grounds[7] = new HouseGroundBlock(HouseColor.purple, 2);
+
         Square start = new Square("Start", 0, 0, SquareType.Start);
         Square Rødovrevej = new Square("Rødovrevej", 60, 2, new int[]{10, 30, 90, 160}, SquareType.Payment, HouseColor.blue, 50);
         Square Prøvlykken = new Square("Prøv Lykken", 0, 0, SquareType.TakeChanceCard);
@@ -289,37 +421,37 @@ public class GameBoard {
         Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10 el. 200", 200, 0, SquareType.Payment);
         Square Øresund = new Square("Øresund", 200, 25, SquareType.Payment);
         Square Roskildevej = new Square("Roskildevej", 100, 6, new int[]{30, 90, 270, 400}, SquareType.Payment, HouseColor.pink, 50);
-        Square ValbyLanggade = new Square("Valby Langade", 100, 6,  new int[]{30, 90, 270, 400}, SquareType.Payment, HouseColor.pink, 50);
-        Square Allégade = new Square("Allégade", 120, 8, new int[]{40, 100, 300, 450}, SquareType.Payment, HouseColor.pink,50);
+        Square ValbyLanggade = new Square("Valby Langade", 100, 6, new int[]{30, 90, 270, 400}, SquareType.Payment, HouseColor.pink, 50);
+        Square Allégade = new Square("Allégade", 120, 8, new int[]{40, 100, 300, 450}, SquareType.Payment, HouseColor.pink, 50);
         Square Gratisparkering = new Square("Gratis Parkering", 0, 0, SquareType.Prison);
-        Square FrederiksbergAlle = new Square("Frederiksberg Allé", 140, 10, new int[]{50,150 ,450, 625}, SquareType.Payment, HouseColor.green,100);
+        Square FrederiksbergAlle = new Square("Frederiksberg Allé", 140, 10, new int[]{50, 150, 450, 625}, SquareType.Payment, HouseColor.green, 100);
         Square Tuborg = new Square("Tuborg", 150, 10, SquareType.Payment);
-        Square Bülowsvej = new Square("Bülowsvej", 140, 10,  new int[]{50,150 ,450, 625}, SquareType.Payment, HouseColor.green,100);
-        Square GammelKongevej = new Square("Gammel Kongevej", 140, 12,  new int[]{60, 180, 500, 700}, SquareType.Payment, HouseColor.green,100);
+        Square Bülowsvej = new Square("Bülowsvej", 140, 10, new int[]{50, 150, 450, 625}, SquareType.Payment, HouseColor.green, 100);
+        Square GammelKongevej = new Square("Gammel Kongevej", 140, 12, new int[]{60, 180, 500, 700}, SquareType.Payment, HouseColor.green, 100);
         Square DFDS = new Square("D.F.D.S", 200, 25, SquareType.Payment);
-        Square Bernstorffsvej = new Square("Bernstorffsvej", 180, 14, new int[]{70,200,550,750}, SquareType.Payment, HouseColor.grey,100);
-        Square Hellerupvej = new Square("Hellerupvej", 180, 14, new int[]{70,200,550,750}, SquareType.Payment, HouseColor.grey,100);
-        Square Strandvejen = new Square("Strandvejen", 180, 16, new int[]{80,220,600,800}, SquareType.Payment, HouseColor.grey,100);
+        Square Bernstorffsvej = new Square("Bernstorffsvej", 180, 14, new int[]{70, 200, 550, 750}, SquareType.Payment, HouseColor.gray, 100);
+        Square Hellerupvej = new Square("Hellerupvej", 180, 14, new int[]{70, 200, 550, 750}, SquareType.Payment, HouseColor.gray, 100);
+        Square Strandvejen = new Square("Strandvejen", 180, 16, new int[]{80, 220, 600, 800}, SquareType.Payment, HouseColor.gray, 100);
         Square Helle = new Square("helle", 0, 0, SquareType.DoNothing);
-        Square Trianglen = new Square("Trianglen", 200, 18,new int[]{90,250,700,875}, SquareType.Payment, HouseColor.red,150);
-        Square Østerbrogade = new Square("Østerbrogade", 220, 18,new int[]{90,250,700,875}, SquareType.Payment, HouseColor.red,150);
-        Square Grønningen = new Square("Grønningen", 240, 20, new int[]{100,300,750,925}, SquareType.Payment, HouseColor.red,150);
+        Square Trianglen = new Square("Trianglen", 200, 18, new int[]{90, 250, 700, 875}, SquareType.Payment, HouseColor.red, 150);
+        Square Østerbrogade = new Square("Østerbrogade", 220, 18, new int[]{90, 250, 700, 875}, SquareType.Payment, HouseColor.red, 150);
+        Square Grønningen = new Square("Grønningen", 240, 20, new int[]{100, 300, 750, 925}, SquareType.Payment, HouseColor.red, 150);
         Square ØS = new Square("Ø.S", 200, 25, SquareType.Payment);
-        Square Bredgade = new Square("Bredgade", 260, 22,  new int[]{110,330,800,975}, SquareType.Payment, HouseColor.white,150);
-        Square KgsNytorv = new Square("Kgs. Nytorv", 260, 22, new int[]{110,330,800,975}, SquareType.Payment, HouseColor.white,150);
+        Square Bredgade = new Square("Bredgade", 260, 22, new int[]{110, 330, 800, 975}, SquareType.Payment, HouseColor.white, 150);
+        Square KgsNytorv = new Square("Kgs. Nytorv", 260, 22, new int[]{110, 330, 800, 975}, SquareType.Payment, HouseColor.white, 150);
         Square Carlsberg = new Square("Carlsberg", 150, 10, SquareType.Payment);
-        Square Østergade = new Square("Østergade", 280, 22,new int[]{120,360,850,1025}, SquareType.Payment, HouseColor.white,150);
+        Square Østergade = new Square("Østergade", 280, 22, new int[]{120, 360, 850, 1025}, SquareType.Payment, HouseColor.white, 150);
         Square GaaIFaengsel = new Square("Gå i Fængsel", 0, 0, SquareType.GotoJail);
-        Square Amagertorv = new Square("Amagertorv", 300, 26,new int[]{130,390,900,1100}, SquareType.Payment, HouseColor.yellow,200);
-        Square Vimmelskaftet = new Square("Vimmelskaftet", 300, 26,new int[]{130,390,900,1100}, SquareType.Payment, HouseColor.yellow,200);
-        Square Nygade = new Square("Nygade", 320, 28,new int[]{150,450,1000,1200}, SquareType.Payment, HouseColor.yellow,200);
+        Square Amagertorv = new Square("Amagertorv", 300, 26, new int[]{130, 390, 900, 1100}, SquareType.Payment, HouseColor.yellow, 200);
+        Square Vimmelskaftet = new Square("Vimmelskaftet", 300, 26, new int[]{130, 390, 900, 1100}, SquareType.Payment, HouseColor.yellow, 200);
+        Square Nygade = new Square("Nygade", 320, 28, new int[]{150, 450, 1000, 1200}, SquareType.Payment, HouseColor.yellow, 200);
         Square Bornholm = new Square("Bornholm", 200, 25, SquareType.Payment);
-        Square Frederiksberggade = new Square("Frederiksberggade", 350, 35,new int[]{175,500,1100,1300}, SquareType.Payment, HouseColor.purple,200);
+        Square Frederiksberggade = new Square("Frederiksberggade", 350, 35, new int[]{175, 500, 1100, 1300}, SquareType.Payment, HouseColor.purple, 200);
         Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100, 0, SquareType.Payment);
-        Square Raadhuspladsen = new Square("Rådhuspladsen", 400, 50,new int[]{200,600,1400,1700}, SquareType.Payment, HouseColor.purple,200);
+        Square Raadhuspladsen = new Square("Rådhuspladsen", 400, 50, new int[]{200, 600, 1400, 1700}, SquareType.Payment, HouseColor.purple, 200);
 
 
-        Square[] boardSquares = new Square[squareCount];
+        this.boardSquares = new Square[squareCount];
         boardSquares[0] = start;
         boardSquares[1] = Rødovrevej;
         boardSquares[2] = chance1;
@@ -360,7 +492,5 @@ public class GameBoard {
         boardSquares[37] = Frederiksberggade;
         boardSquares[38] = Skat;
         boardSquares[39] = Raadhuspladsen;
-
-        this.boardSquares = boardSquares;
     }
 }

@@ -1,7 +1,11 @@
 public enum HouseColor {
+    none,
     blue,
-    grey,
+    pink,
+    green,
+    gray,
+    red,
     white,
     yellow,
-    green, pink, red, purple,
-
+    purple
+}

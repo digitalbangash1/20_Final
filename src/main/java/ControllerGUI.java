@@ -7,9 +7,9 @@ import java.awt.*;
 
 public class ControllerGUI {
 
-    public Player[] players;
-    public GUI gui;
-    private GameBoard gameBoard;
+   public Player[] players;
+   public GUI gui;
+   private GameBoard gameBoard;
 
     ControllerGUI(){
         gui = new GUI();
