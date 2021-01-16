@@ -17,12 +17,26 @@ public class GameBoard {
     private HouseGroundBlock[] grounds = new HouseGroundBlock[8];
 
 
+    /**
+     * GameBoard Constructor
+     * @param gui
+     * @param players
+     */
     public GameBoard(GUI gui, Player[] players) {
         this.gui = gui;
         this.players = players;
         initializeBoard();
     }
 
+    /**
+     * This method deals with the logic when the player has a turn and is not in jail.
+     * The different methods are called afterwards.
+     * @param currentPlayer
+     * @param diceValuesSum
+     * @param dice
+     * @param
+     * @throws NotEnoughBalanceException
+     */
     public void takePlayerTurn(Player currentPlayer, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
         boolean prison = handleAnySquareBefore(currentPlayer, dice);
         if (!prison) {
@@ -160,6 +174,10 @@ public class GameBoard {
         return ownSquares;
     }
 
+    /**
+     * This method deals with the win function and anounce player.
+     * @param currentPlayer
+     */
     public void gameOver(Player currentPlayer) {
         Player winner = players[0];
         for (int i = 1; i < players.length; i++) {
@@ -170,6 +188,13 @@ public class GameBoard {
         gui.showMessage("Player " + winner.getName() + " has won the game!");
     }
 
+    /**
+     * This method is called every time when the player lands on field.
+     * After landing the system check which square it is and initiate the method needed to evaluate
+     * @param square
+     * @param currentPlayer
+     * @throws NotEnoughBalanceException
+     */
     private void evaluateSquare(Square square, Player currentPlayer) throws NotEnoughBalanceException {
         switch (square.getSquareType()) {
             case DoNothing:
@@ -190,6 +215,11 @@ public class GameBoard {
         }
     }
 
+    /**
+     * Method deals with the player landing on the start
+     * increases balance by amount
+     * @param currentPlayer
+     */
     private void handleStartSquare(Player currentPlayer) {
         gui.showMessage(Texts.start);
         currentPlayer.increaseBalanceBy(200);
@@ -222,6 +252,11 @@ public class GameBoard {
         }
     }
 
+    /**
+     * This method prints the messages to the screen.
+     * @param player
+     * @param square
+     */
     private void printBoardSquare(Player player, Square square) {
         //Special cases, where the field should not be printed
         if (square.getSquareType() == SquareType.Prison) {
@@ -229,9 +264,17 @@ public class GameBoard {
         } else if (square.getSquareType() == SquareType.TakeChanceCard) {
             return;
         }
-        this.gui.showMessage(player.getName() + ", felt: " + square.getTitle());
+        this.gui.showMessage(player.getName() + ":"+ " Du er landet på "+ " ---> " + square.getTitle());
     }
 
+    /**
+     * This method handles with when the player is in jail.
+     * PLayer is asked about if the player wants to pay or to throw dice.
+     * @param currentPlayer
+     * @param dice
+     * @return
+     * @throws NotEnoughBalanceException
+     */
     private boolean handleAnySquareBefore(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
         if (currentPlayer.isInPrison()) {
             if (currentPlayer.hasJailFreeCard()) {
@@ -270,6 +313,11 @@ public class GameBoard {
         return false;
     }
 
+    /**
+     * This method handles when the player completes one round.
+     * @param currentPlayer
+     * @param nextIndex
+     */
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
         if (nextIndex >= squareCount) {
             currentPlayer.increaseBalanceBy(200);
@@ -281,6 +329,12 @@ public class GameBoard {
 
     }
 
+    /**
+     * This method handles when the player lands on the payment fields
+     * @param currentPlayer
+     * @param boardSquare
+     * @throws NotEnoughBalanceException
+     */
     private void handlePaymentSquare(Player currentPlayer, Square boardSquare) throws NotEnoughBalanceException {
 
         //Square boardSquare;
@@ -294,7 +348,7 @@ public class GameBoard {
             gui.showMessage(Texts.youownit);
         } else if (soldToPlayer == null) {
             boolean choice = gui.getUserLeftButtonPressed(
-                    Texts.willyoubuy + "    " + Texts.field + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
+                    Texts.willyoubuy + "    " + Texts.field +"   " + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -319,7 +373,10 @@ public class GameBoard {
         currentPlayer.setPlayerPosition(prisonIndex);
     }
 
-
+    /**method is used to handle chance card
+     * @param currentPlayer
+     * @throws NotEnoughBalanceException
+     */
     private void handleTakeChanceCardSquare(Player currentPlayer) throws NotEnoughBalanceException {
         gui.showMessage(Texts.proeveLykken);
         ChanceCard chanceCard = chanceDeck.getRandomChanceCard();
@@ -370,11 +427,21 @@ public class GameBoard {
                 }
         }
     }
+    /**
+     *Calaculates the new poistion of the current player after throw
+     * @param currentPlayer
+     * @param dicValuesSum
+     * @return
+     */
 
-    public int CalculateNewPlayerPosition(Player currentPlayer, int dicValuesSum) {
+     public int CalculateNewPlayerPosition(Player currentPlayer, int dicValuesSum) {
         return (currentPlayer.getPlayerPosition() + dicValuesSum) % gui.getFields().length;
     }
-
+    /**
+     * This method moves the car from the old pos to new pos and set players new position. The display is also shown here.
+     * @param currentPlayer
+     * @param PlayerNewPosition
+     */
     public void MoveCar(Player currentPlayer, int PlayerNewPosition) {
 
 //        try {
@@ -402,6 +469,9 @@ public class GameBoard {
     }
 
 
+    /**
+     *
+     */
     private void initializeBoard() {
 
         grounds[0] = new HouseGroundBlock(HouseColor.blue, 2);

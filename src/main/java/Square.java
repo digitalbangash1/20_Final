@@ -11,6 +11,16 @@ public class Square {
     private int builtHousesCount;
     private final int maxHousesCanBeBuiltPerSquare = 4;
 
+    /**
+     * Square constructor is created,
+     * @param title
+     * @param price
+     * @param rent
+     * @param houseRents
+     * @param squareType
+     * @param houseColor
+     * @param housePrice
+     */
     public Square(String title, int price, int rent, int[] houseRents, SquareType squareType, HouseColor houseColor, int housePrice) {
         this.title = title;
         this.price = price;

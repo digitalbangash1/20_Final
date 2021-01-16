@@ -13,6 +13,11 @@ public class Player {
     private boolean PlayerTurn;
     private String name;
 
+    /**
+     * Player contructor
+     * @param player
+     * @param playerNumber
+     */
     public Player(GUI_Player player, int playerNumber) {
         this.name = player.getName();
         this.player = player;
