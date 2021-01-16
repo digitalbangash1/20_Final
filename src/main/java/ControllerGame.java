@@ -20,7 +20,9 @@ public class ControllerGame {
 
             try {
                 if (testHouseBuilding) {
-                    testHouseBuilding(currentPlayer, gameBoard);
+                    //testHouseBuilding(currentPlayer, gameBoard);
+                    //testGoingToJail(currentPlayer, gameBoard);
+                    testPayingOfTexas(currentPlayer, gameBoard);
                 } else {
                     int value1 = dice.roll();
                     int value2 = dice.roll();
@@ -40,6 +42,50 @@ public class ControllerGame {
         String playerName = currentPlayer.getName();
         System.out.println(playerName + " turn");
         controllerGUI.gui.showMessage(playerName + " : roll the dice");
+    }
+
+    private void testPayingOfTexas(Player player, GameBoard gameBoard) throws NotEnoughBalanceException {
+
+        Square[] squares = gameBoard.getBoardSquares();
+        Square gotoJailSquare = squares[30];
+
+        int value1 = 2;
+        int value2 = 2;
+        int indkomskat = value1 + value2;
+        controllerGUI.gui.setDice(value1, value2);
+        gameBoard.takePlayerTurn(currentPlayer, indkomskat, dice);
+
+        value1 = 6;
+        value2 = 6;
+        indkomskat = 34; //ekstaordinærskat 4 before and 34 gives 38 which is ekstraordinørskat square
+        controllerGUI.gui.setDice(value1, value2);
+        gameBoard.takePlayerTurn(currentPlayer, indkomskat, dice);
+    }
+
+    private void testGoingToJail(Player player, GameBoard gameBoard) throws NotEnoughBalanceException {
+
+        Square[] squares = gameBoard.getBoardSquares();
+        Square gotoJailSquare = squares[30];
+
+        //Make user land on go to jail square after a few turns
+        int value1 = 6;
+        int value2 = 6;
+        int diceValuesSumForAllegade = value1 + value2;
+        controllerGUI.gui.setDice(value1, value2);
+        gameBoard.takePlayerTurn(currentPlayer, diceValuesSumForAllegade, dice);
+
+        value1 = 6;
+        value2 = 6;
+        diceValuesSumForAllegade = value1 + value2;
+        controllerGUI.gui.setDice(value1, value2);
+        gameBoard.takePlayerTurn(currentPlayer, diceValuesSumForAllegade, dice);
+
+        value1 = 3;
+        value2 = 3;
+        diceValuesSumForAllegade = value1 + value2;
+        controllerGUI.gui.setDice(value1, value2);
+        gameBoard.takePlayerTurn(currentPlayer, diceValuesSumForAllegade, dice);
+
     }
 
     private void testHouseBuilding(Player player, GameBoard gameBoard) throws NotEnoughBalanceException {

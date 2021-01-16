@@ -24,9 +24,6 @@ public class ControllerGUI {
         return gameBoard;
     }
 
-    /**
-     * This method starts the process when the game is intialised.
-     */
     private void PlayerStart(){
         int number = Integer.parseInt(RequestPlayerAmount());
         System.out.println(number);

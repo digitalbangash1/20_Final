@@ -4,6 +4,7 @@ public class Texts {
 
     public static String proeveLykken = "Du er landet på prøv lykken! Tag et chance kort";
     public static String goingToJail = "Du skal i Fængsel!";
+    public static String youAreInJail = "Du er i Fængsel!";
     public static String start = "Du er landet på start! Modtag 200";
     public static String jailfreecard = "Du har et kom ud af fængslet kort. Vil du bruge det?";
     public static String jailout = "Er i fængsel. Slå to ens for at komme fri eller betal 50 kroner";
@@ -24,6 +25,9 @@ public class Texts {
     public static String pay50 = "Betal 50 kroner";
     public static String vilDuByggeHus = "Vil du bygge hus?";
     public static String hvorViDuByggeHus = "Hvor vil du bygge hus?";
+    public static String ekstraOrdinaerSkat = "De skal betale ekstraordinær statsskat : Betal 100 kr";
+    public static String indomstSkat = "Betal Indokmst skat, 10% el. 200";
+
 //    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
 //    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
 //    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";

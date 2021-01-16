@@ -15,6 +15,7 @@ public class GameBoard {
     private Square[] boardSquares;
     private ChanceDeck chanceDeck = new ChanceDeck();
     private HouseGroundBlock[] grounds = new HouseGroundBlock[8];
+    private boolean didPlayerUseMoveToStartChanceCard;
 
 
     /**
@@ -38,21 +39,36 @@ public class GameBoard {
      * @throws NotEnoughBalanceException
      */
     public void takePlayerTurn(Player currentPlayer, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
+        didPlayerUseMoveToStartChanceCard = false;
+        int previousPosition = currentPlayer.getPlayerPosition();
         boolean prison = handleAnySquareBefore(currentPlayer, dice);
-        if (!prison) {
-            int PlayerNewPosition = CalculateNewPlayerPosition(currentPlayer, diceValuesSum);
-            Square boardSquare = boardSquares[PlayerNewPosition];
-            printBoardSquare(currentPlayer, boardSquare);
-            evaluateSquare(boardSquare, currentPlayer);
-            handleAnySquareAfter(currentPlayer, PlayerNewPosition);
-            currentPlayer.setBalance(currentPlayer.getBalance());
-            MoveCar(currentPlayer, PlayerNewPosition);
-            handleBuildingHouse(currentPlayer, boardSquare);
+
+        if (prison) {
+            return;
         }
+
+        int PlayerNewPosition = CalculateNewPlayerPosition(currentPlayer, diceValuesSum);
+        MoveCar(currentPlayer, PlayerNewPosition);
+        Square boardSquare = boardSquares[PlayerNewPosition];
+        printBoardSquare(currentPlayer, boardSquare);
+        evaluateSquare(boardSquare, currentPlayer);
+        handleAnySquareAfter(currentPlayer, PlayerNewPosition);
+        currentPlayer.setBalance(currentPlayer.getBalance());
+        handleBuildingHouse(currentPlayer, boardSquare);
+        handlePassingOfStartSquare(currentPlayer, previousPosition);
     }
 
     public Square[] getBoardSquares() {
         return boardSquares;
+    }
+
+    private void handlePassingOfStartSquare(Player currentPlayer, int previousPosition) {
+        int currentPosition = currentPlayer.getPlayerPosition();
+        boolean didPlayerPassStart = currentPosition >= 0 && currentPosition <= previousPosition;
+        if (didPlayerPassStart && !currentPlayer.isInPrison() && !didPlayerUseMoveToStartChanceCard) {
+            gui.showMessage(Texts.passedstart);
+            currentPlayer.increaseBalanceBy(200);
+        }
     }
 
     private void handleBuildingHouse(Player player, Square boardSquare) throws NotEnoughBalanceException {
@@ -206,6 +222,12 @@ public class GameBoard {
             case Payment:
                 handlePaymentSquare(currentPlayer, square);
                 break;
+            case IndomstSkat:
+                handleSkatSquare(currentPlayer, square);
+                break;
+            case Ekstraordinærskat:
+                handleEkstaordinaerSkatSquare(currentPlayer, square);
+                break;
             case GotoJail:
                 handleGotoJailSquare(currentPlayer);
                 break;
@@ -221,8 +243,8 @@ public class GameBoard {
      * @param currentPlayer
      */
     private void handleStartSquare(Player currentPlayer) {
-        gui.showMessage(Texts.start);
-        currentPlayer.increaseBalanceBy(200);
+//        gui.showMessage(Texts.start);
+//        currentPlayer.increaseBalanceBy(200);
     }
 
 //    private int movePlayer(Player currentPlayer, int diceValue) {
@@ -313,16 +335,11 @@ public class GameBoard {
         return false;
     }
 
-    /**
-     * This method handles when the player completes one round.
-     * @param currentPlayer
-     * @param nextIndex
-     */
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
-        if (nextIndex >= squareCount) {
-            currentPlayer.increaseBalanceBy(200);
-            gui.showMessage(Texts.passedstart);
-        }
+//        if (nextIndex >= squareCount) {
+//            currentPlayer.increaseBalanceBy(200);
+//            gui.showMessage(Texts.passedstart);
+//        }
     }
 
     private void handleNothingSquare(Player currentPlayer) {
@@ -370,8 +387,26 @@ public class GameBoard {
         currentPlayer.setInPrison(true);
         gui.showMessage(Texts.goingToJail);
         int prisonIndex = getSquareIndexByType(SquareType.Prison);
-        currentPlayer.setPlayerPosition(prisonIndex);
+        MoveCar(currentPlayer, prisonIndex);
     }
+
+    private void handleSkatSquare(Player currentPlayer, Square square) throws NotEnoughBalanceException {
+        boolean tenPercent = gui.getUserLeftButtonPressed(Texts.indomstSkat, "10%", "200kr,-");
+        int amountToPay = 200;
+        if (tenPercent) {
+            amountToPay = (int) (currentPlayer.getBalance() * 0.1);
+        }
+        gui.showMessage("De betaler " + amountToPay + " kr i indkomstskat");
+        currentPlayer.decreaseBalanceBy(amountToPay);
+    }
+
+    private void handleEkstaordinaerSkatSquare(Player currentPlayer, Square square) throws NotEnoughBalanceException {
+        gui.showMessage(Texts.ekstraOrdinaerSkat);
+        currentPlayer.decreaseBalanceBy(100);
+    }
+
+
+
 
     /**method is used to handle chance card
      * @param currentPlayer
@@ -385,6 +420,7 @@ public class GameBoard {
         ChanceCardActionType action = chanceCard.getActionType();
         switch (action) {
             case Start:
+                didPlayerUseMoveToStartChanceCard = true;
                 MoveCar(currentPlayer, 0);
                 break;
             case Move:
@@ -398,6 +434,9 @@ public class GameBoard {
                 break;
             case GetPaid:
                 currentPlayer.increaseBalanceBy(chanceCard.getValue());
+                break;
+            case GotoPrison:
+                handleGotoJailSquare(currentPlayer);
                 break;
             case Prison:
                 if (!currentPlayer.hasJailFreeCard()) {
@@ -413,7 +452,10 @@ public class GameBoard {
                 }
                 break;
             case Raadhuspladsen:
-                MoveCar(currentPlayer, 39);
+                //hideOldPosition();
+                //currentPlayer.setPlayerPosition(0);
+                //currentPlayer.setPlayerNewPosition(chanceCard.getMove());
+                MoveCar(currentPlayer, 0);
                 break;
             case CrossingStart:
                 if (currentPlayer.getPlayerPosition() > chanceCard.getMove()) {
@@ -431,7 +473,7 @@ public class GameBoard {
      * @return
      */
 
-     public int CalculateNewPlayerPosition(Player currentPlayer, int dicValuesSum) {
+    public int CalculateNewPlayerPosition(Player currentPlayer, int dicValuesSum) {
         return (currentPlayer.getPlayerPosition() + dicValuesSum) % gui.getFields().length;
     }
     /**
@@ -440,20 +482,17 @@ public class GameBoard {
      * @param PlayerNewPosition
      */
     public void MoveCar(Player currentPlayer, int PlayerNewPosition) {
-
-//        try {
-        int CurrentPosition = currentPlayer.getPlayerPosition();
         GUI_Field[] fields = gui.getFields();
+        int CurrentPosition = currentPlayer.getPlayerPosition();
+        int newPosition = CurrentPosition - Math.abs(PlayerNewPosition);
+        if (PlayerNewPosition < 0 && newPosition < 0) {
+            PlayerNewPosition = fields.length - Math.abs(newPosition);
+        }
+
         GUI_Player guiPlayer = currentPlayer.getGuiPlayer();
         fields[CurrentPosition].setCar(guiPlayer, false);
-        currentPlayer.setPlayerPosition(PlayerNewPosition);
         fields[PlayerNewPosition].setCar(guiPlayer, true);
-
-
-//        }catch (IndexOutOfBoundsException e){
-//            e.printStackTrace();
-//            System.out.println(" IndexOutOfBoundsException");
-//        }
+        currentPlayer.setPlayerPosition(PlayerNewPosition);
     }
 
     private int getSquareIndexByType(SquareType squareType) {
@@ -467,9 +506,6 @@ public class GameBoard {
     }
 
 
-    /**
-     *
-     */
     private void initializeBoard() {
 
         grounds[0] = new HouseGroundBlock(HouseColor.blue, 2);
@@ -486,7 +522,7 @@ public class GameBoard {
         Square Prøvlykken = new Square("Prøv Lykken", 0, 0, SquareType.TakeChanceCard);
         Square chance1 = new Square("Chance", 0, 0, SquareType.TakeChanceCard);
         Square Hvidovrevej = new Square("Hvidovrevej", 60, 4, new int[]{20, 60, 180, 320}, SquareType.Payment, HouseColor.blue, 50);
-        Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10 el. 200", 200, 0, SquareType.Payment);
+        Square BetalIndomstSkat = new Square("Betal Indokmst skat, 10% el. 200", 200, 0, SquareType.IndomstSkat);
         Square Øresund = new Square("Øresund", 200, 25, SquareType.Payment);
         Square Roskildevej = new Square("Roskildevej", 100, 6, new int[]{30, 90, 270, 400}, SquareType.Payment, HouseColor.pink, 50);
         Square ValbyLanggade = new Square("Valby Langade", 100, 6, new int[]{30, 90, 270, 400}, SquareType.Payment, HouseColor.pink, 50);
@@ -515,7 +551,7 @@ public class GameBoard {
         Square Nygade = new Square("Nygade", 320, 28, new int[]{150, 450, 1000, 1200}, SquareType.Payment, HouseColor.yellow, 200);
         Square Bornholm = new Square("Bornholm", 200, 25, SquareType.Payment);
         Square Frederiksberggade = new Square("Frederiksberggade", 350, 35, new int[]{175, 500, 1100, 1300}, SquareType.Payment, HouseColor.purple, 200);
-        Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100, 0, SquareType.Payment);
+        Square Skat = new Square("Ekstra-\nordinær\nstatsskat", 100, 0, SquareType.Ekstraordinærskat);
         Square Raadhuspladsen = new Square("Rådhuspladsen", 400, 50, new int[]{200, 600, 1400, 1700}, SquareType.Payment, HouseColor.purple, 200);
 
 

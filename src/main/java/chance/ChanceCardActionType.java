@@ -1,7 +1,6 @@
 package chance;
 
 public enum ChanceCardActionType {
-
     Start,
     Move,
     Pay,
