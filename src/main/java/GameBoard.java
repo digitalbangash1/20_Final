@@ -9,7 +9,6 @@ import gui_main.GUI;
 public class GameBoard {
 
     private int squareCount = 40;
-    private int chanceCount = 7;
     private GUI gui;
     private Player[] players;
     private Square[] boardSquares;
@@ -20,7 +19,7 @@ public class GameBoard {
 
     /**
      * GameBoard Constructor
-     * @param gui
+     * @param gui     take gui as
      * @param players
      */
     public GameBoard(GUI gui, Player[] players) {
@@ -207,6 +206,7 @@ public class GameBoard {
     /**
      * This method is called every time when the player lands on field.
      * After landing the system check which square it is and initiate the method needed to evaluate
+     *
      * @param square
      * @param currentPlayer
      * @throws NotEnoughBalanceException
@@ -240,30 +240,13 @@ public class GameBoard {
     /**
      * Method deals with the player landing on the start
      * increases balance by amount
+     *
      * @param currentPlayer
      */
     private void handleStartSquare(Player currentPlayer) {
-//        gui.showMessage(Texts.start);
-//        currentPlayer.increaseBalanceBy(200);
+
     }
 
-//    private int movePlayer(Player currentPlayer, int diceValue) {
-//
-//        //Calculate next index
-//        int nextIndex = currentPlayer.getCurrentSquareIndex() + diceValue;
-//        //Set players current index to this
-//        int currentIndex = nextIndex % squareCount;
-//        //Check if the player has once again reached start
-//        boolean passedStart = checkIndex(nextIndex);
-//
-//        if (passedStart) {
-//            currentIndex = nextIndex - squareCount;
-//            currentPlayer.setCurrentSquareIndex(this.gui, currentIndex);
-//        } else {
-//            currentPlayer.setCurrentSquareIndex(this.gui, currentIndex);
-//        }
-//        return currentIndex;
-//    }
 
     private boolean checkIndex(int nextIndex) {
         if (nextIndex >= squareCount) {
@@ -276,6 +259,7 @@ public class GameBoard {
 
     /**
      * This method prints the messages to the screen.
+     *
      * @param player
      * @param square
      */
@@ -286,12 +270,13 @@ public class GameBoard {
         } else if (square.getSquareType() == SquareType.TakeChanceCard) {
             return;
         }
-        this.gui.showMessage(player.getName() + ":"+ " Du er landet på "+ " ---> " + square.getTitle());
+        this.gui.showMessage(player.getName() + ":" + " Du er landet på " + " ---> " + square.getTitle());
     }
 
     /**
      * This method handles with when the player is in jail.
      * PLayer is asked about if the player wants to pay or to throw dice.
+     *
      * @param currentPlayer
      * @param dice
      * @return
@@ -336,10 +321,7 @@ public class GameBoard {
     }
 
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
-//        if (nextIndex >= squareCount) {
-//            currentPlayer.increaseBalanceBy(200);
-//            gui.showMessage(Texts.passedstart);
-//        }
+
     }
 
     private void handleNothingSquare(Player currentPlayer) {
@@ -348,14 +330,14 @@ public class GameBoard {
 
     /**
      * This method handles when the player lands on the payment fields
+     *
      * @param currentPlayer
      * @param boardSquare
      * @throws NotEnoughBalanceException
      */
     private void handlePaymentSquare(Player currentPlayer, Square boardSquare) throws NotEnoughBalanceException {
 
-        //Square boardSquare;
-        //boardSquare = boardSquares[currentPlayer.getPlayerPosition()];
+
         int fieldPrice = boardSquare.getFieldPrice();
         Player soldToPlayer = boardSquare.getSoldToPlayer();
 
@@ -365,7 +347,7 @@ public class GameBoard {
             gui.showMessage(Texts.youownit);
         } else if (soldToPlayer == null) {
             boolean choice = gui.getUserLeftButtonPressed(
-                    Texts.willyoubuy + "    " + Texts.field +"   " + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
+                    currentPlayer.getName() + ":" + Texts.willyoubuy + "    " + Texts.field + "   " + boardSquare.getTitle() + "      " + Texts.price + fieldPrice, Texts.ja, Texts.nej);
             // the first player on this square becomes the owner and pays the price
             if (choice) {
                 currentPlayer.decreaseBalanceBy(fieldPrice);
@@ -406,14 +388,14 @@ public class GameBoard {
     }
 
 
-
-
-    /**method is used to handle chance card
+    /**
+     * method is used to handle chance card
+     *
      * @param currentPlayer
      * @throws NotEnoughBalanceException
      */
     private void handleTakeChanceCardSquare(Player currentPlayer) throws NotEnoughBalanceException {
-        gui.showMessage(Texts.proeveLykken);
+        gui.showMessage(currentPlayer.getName() + ":" + Texts.proeveLykken);
         ChanceCard chanceCard = chanceDeck.getRandomChanceCard();
         String text = chanceCard.getText();
         gui.displayChanceCard(text);
@@ -452,10 +434,7 @@ public class GameBoard {
                 }
                 break;
             case Raadhuspladsen:
-                //hideOldPosition();
-                //currentPlayer.setPlayerPosition(0);
-                //currentPlayer.setPlayerNewPosition(chanceCard.getMove());
-                MoveCar(currentPlayer, 0);
+                MoveCar(currentPlayer,chanceCard.getMove());
                 break;
             case CrossingStart:
                 if (currentPlayer.getPlayerPosition() > chanceCard.getMove()) {
@@ -466,8 +445,10 @@ public class GameBoard {
                 }
         }
     }
+
     /**
-     *Calaculates the new poistion of the current player after throw
+     * Calaculates the new poistion of the current player after throw
+     *
      * @param currentPlayer
      * @param dicValuesSum
      * @return
@@ -476,8 +457,10 @@ public class GameBoard {
     public int CalculateNewPlayerPosition(Player currentPlayer, int dicValuesSum) {
         return (currentPlayer.getPlayerPosition() + dicValuesSum) % gui.getFields().length;
     }
+
     /**
      * This method moves the car from the old pos to new pos and set players new position. The display is also shown here.
+     *
      * @param currentPlayer
      * @param PlayerNewPosition
      */

@@ -1,13 +1,10 @@
 package chance;
-import java.util.Random;
-
 
 public class ChanceCard {
     private String text;
     private ChanceCardActionType actionType;
     private int value;
     private int move;
-    private int chanceCount = 6;
 
     public ChanceCard(String text, ChanceCardActionType actionType, int value, int move) {
         this.text = text;
