@@ -15,10 +15,11 @@ public class GameBoard {
     private ChanceDeck chanceDeck = new ChanceDeck();
     private HouseGroundBlock[] grounds = new HouseGroundBlock[8];
     private boolean didPlayerUseMoveToStartChanceCard;
-
+    private  int previousPosition;
 
     /**
      * GameBoard Constructor
+     *
      * @param gui     take gui as
      * @param players
      */
@@ -31,6 +32,7 @@ public class GameBoard {
     /**
      * This method deals with the logic when the player has a turn and is not in jail.
      * The different methods are called afterwards.
+     *
      * @param currentPlayer
      * @param diceValuesSum
      * @param dice
@@ -39,13 +41,17 @@ public class GameBoard {
      */
     public void takePlayerTurn(Player currentPlayer, int diceValuesSum, Dice dice) throws NotEnoughBalanceException {
         didPlayerUseMoveToStartChanceCard = false;
-        int previousPosition = currentPlayer.getPlayerPosition();
+        previousPosition = currentPlayer.getPlayerPosition();
         boolean prison = handleAnySquareBefore(currentPlayer, dice);
 
         if (prison) {
             return;
         }
 
+        takeTurn(currentPlayer, diceValuesSum);
+    }
+
+    private void takeTurn(Player currentPlayer, int diceValuesSum) throws NotEnoughBalanceException {
         int PlayerNewPosition = CalculateNewPlayerPosition(currentPlayer, diceValuesSum);
         MoveCar(currentPlayer, PlayerNewPosition);
         Square boardSquare = boardSquares[PlayerNewPosition];
@@ -191,6 +197,7 @@ public class GameBoard {
 
     /**
      * This method deals with the win function and anounce player.
+     *
      * @param currentPlayer
      */
     public void gameOver(Player currentPlayer) {
@@ -283,41 +290,40 @@ public class GameBoard {
      * @throws NotEnoughBalanceException
      */
     private boolean handleAnySquareBefore(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
-        if (currentPlayer.isInPrison()) {
-            if (currentPlayer.hasJailFreeCard()) {
-                boolean choice1 = gui.getUserLeftButtonPressed(Texts.jailfreecard, Texts.ja, Texts.nej);
-                if (choice1) {
-                    currentPlayer.setInPrison(false);
-                    return false;
-                } else {
-                    boolean choice = gui.getUserLeftButtonPressed(currentPlayer.getName() + Texts.jailout, Texts.roll, Texts.pay50);
-                    if (choice) {
-                        int diceValue = dice.roll();
-                        this.gui.setDie(diceValue);
-                        if (diceValue == 6) {
-                            gui.showMessage(Texts.twosame);
-                            MoveCar(currentPlayer, diceValue);
-                            currentPlayer.setInPrison(false);
-                            return false;
-                        } else {
-                            gui.showMessage(Texts.notsame);
-                            return true;
-                        }
-                    } else {
-                        currentPlayer.decreaseBalanceBy(50);
-                        String button = this.gui.getUserButtonPressed(Texts.cameoutofjail, Texts.roll);
-                        if (button.equals(Texts.roll)) {
-                            int diceValue = dice.roll();
-                            this.gui.setDie(diceValue);
-                            currentPlayer.setInPrison(false);
-                            MoveCar(currentPlayer, diceValue);
-                            return true;
-                        }
-                    }
-                }
-            }
+        return handleJail(currentPlayer, dice);
+    }
+
+    private boolean handleJail(Player currentPlayer, Dice dice) throws NotEnoughBalanceException {
+        if (!currentPlayer.isInPrison()) {
+            return false;
         }
-        return false;
+
+        if (currentPlayer.hasJailFreeCard()) {
+            gui.showMessage(Texts.outnow);
+            currentPlayer.setInPrison(false);
+            return false;
+        }
+
+        boolean rollChoice = gui.getUserLeftButtonPressed(currentPlayer.getName() + Texts.jailout, Texts.roll, Texts.pay50);
+        if (rollChoice) {
+            int dice1Value = dice.roll();
+            int dice2Value = dice.roll();
+            this.gui.setDice(dice1Value, dice2Value);
+            if (dice1Value == dice2Value) {
+                gui.showMessage(Texts.twosame);
+                currentPlayer.setInPrison(false);
+                takeTurn(currentPlayer, dice1Value + dice2Value);
+                return true; //player hist two same and is out of prison, but does not get another turn
+            } else {
+                gui.showMessage(Texts.notsame);
+                return true;
+            }
+        } else {
+            currentPlayer.decreaseBalanceBy(50);
+            gui.showMessage(Texts.ticket);
+            currentPlayer.setInPrison(false);
+            return false;
+        }
     }
 
     private void handleAnySquareAfter(Player currentPlayer, int nextIndex) {
@@ -378,7 +384,7 @@ public class GameBoard {
         if (tenPercent) {
             amountToPay = (int) (currentPlayer.getBalance() * 0.1);
         }
-        gui.showMessage("De betaler " + amountToPay + " kr i indkomstskat");
+        gui.showMessage(Texts.youpay + "  " + amountToPay + Texts.intaxes);
         currentPlayer.decreaseBalanceBy(amountToPay);
     }
 
@@ -434,7 +440,7 @@ public class GameBoard {
                 }
                 break;
             case Raadhuspladsen:
-                MoveCar(currentPlayer,chanceCard.getMove());
+                MoveCar(currentPlayer, chanceCard.getMove());
                 break;
             case CrossingStart:
                 if (currentPlayer.getPlayerPosition() > chanceCard.getMove()) {

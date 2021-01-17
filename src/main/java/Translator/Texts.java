@@ -16,7 +16,7 @@ public class Texts {
     public static String ja = "Ja";
     public static String nej = "Nej";
     public static String landonotherfield = "Du er landet på et felt for en anden spiller og skal betale dem ";
-    public static String duejerfelt = "Du har et kom ud af fængslet kort. Vil du bruge det?";
+    public static String outnow = "Du har brugt kom ud af fængsel kort -  du er ude af fængsel.";
     public static String roll = "Kast?";
     public static String youownit = "Du ejer det her felt. Der var du heldig!";
     public static String willyoubuy = "Vil du købe dette felt? ";
@@ -27,11 +27,10 @@ public class Texts {
     public static String hvorViDuByggeHus = "Hvor vil du bygge hus?";
     public static String ekstraOrdinaerSkat = "De skal betale ekstraordinær statsskat : Betal 100 kr";
     public static String indomstSkat = "Betal Indokmst skat, 10% el. 200";
-
-//    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
-//    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
-//    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
-//    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
+    public  static  String youpay=" De betaler";
+    public  static  String intaxes = "kr i indkomstskat";
+    public  static  String ticket = "Du har betalt en bøde på 50 kr og er ude af fængsel?";
+//    public  static  String faengselkort = "Du har jail free kort -  du er ude af fængsel.;
 //    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
 //    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
 //    public  static  String faengselkort = "Du har et kom ud af fængslet kort. Vil du bruge det?";
